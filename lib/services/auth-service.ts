@@ -75,10 +75,23 @@ export const authService = {
       return { error: new Error('Supabase client is not configured.') as any };
     }
 
-    const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}/reset-password` : undefined;
+    // Direct callback to application origin where hash fragments (#type=recovery) are handled
+    const redirectTo = typeof window !== 'undefined' ? `${window.location.origin}` : undefined;
     return await supabase.auth.resetPasswordForEmail(email, {
       redirectTo
     });
+  },
+
+  async updatePassword(newPassword: string): Promise<{ error: AuthError | null }> {
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      return { error: new Error('Supabase client is not configured.') as any };
+    }
+
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+    return { error };
   },
 
   onAuthStateChange(callback: (event: string, session: Session | null) => void) {

@@ -84,11 +84,13 @@ This table is completely inaccessible to `anon` and `authenticated` roles from t
 
 ---
 
-## 5. Configure Supabase Authentication for Hostinger
+## 5. Configure Supabase Authentication & Security for Hostinger
 
 In your Supabase Dashboard:
+
+### A. URL Configuration
 1. Navigate to **Authentication** > **URL Configuration**.
-2. Set **Site URL** to your production domain:
+2. Set **Site URL** to:
    ```
    https://erp.bizchefs.com
    ```
@@ -98,7 +100,29 @@ In your Supabase Dashboard:
    https://bizchefs.com/**
    http://localhost:3000/**
    ```
-4. Under **Email Templates**, ensure confirmation and password reset links direct to your domain.
+
+### B. Email Templates & Recovery Links
+1. Navigate to **Authentication** > **Email Templates**.
+2. **Confirm signup**:
+   - Subject: `Confirm your BizChefs ERP account`
+   - Body should contain: `{{ .ConfirmationURL }}`
+3. **Reset password**:
+   - Subject: `Reset your BizChefs ERP password`
+   - Body should contain: `{{ .ConfirmationURL }}`
+   - The link will redirect the user to `https://erp.bizchefs.com/#access_token=...&type=recovery` which our client-side router intercepts automatically into the secure Password Reset view.
+
+### C. Rate Limiting & Abuse Prevention
+1. In **Authentication** > **Rate Limits**:
+   - Email sending rate limit: Default is 3 emails per hour per recipient (protects against spamming).
+   - Signup rate limit: Default is 30 signups per hour per IP.
+2. In **Authentication** > **Bot Protection**:
+   - Enable Cloudflare Turnstile or hCaptcha if your public registration is receiving automated bot traffic.
+
+### D. Private Storage Buckets
+The database migration (`20261028010000_bizchefs_erp_security_and_modules.sql`) automatically provisions:
+- `erp-documents`: Private bucket (25 MB max file size) for invoices, receipts, and PO attachments.
+- `company-assets`: Private bucket (10 MB max file size) for company logos and signatures.
+- Both buckets enforce tenant-isolated RLS on `storage.objects` requiring `(storage.foldername(name))[1]` to match an authorized tenant ID.
 
 ---
 

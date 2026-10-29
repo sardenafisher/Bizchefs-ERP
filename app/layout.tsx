@@ -14,6 +14,10 @@ export const metadata: Metadata = {
     title: 'BizChefs ERP — Commercial Multi-Tenant Enterprise Management',
     description: 'Production multi-tenant ERP platform for BizChefs featuring Accounting, Double-entry General Ledger, Inventory, Purchasing, CRM, and Operations.',
   },
+  icons: {
+    icon: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {

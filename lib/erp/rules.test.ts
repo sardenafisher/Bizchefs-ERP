@@ -5,6 +5,7 @@ import { validateJournalEntryBalance, computeProfitAndLoss, computeBalanceSheet 
 import { calculateLineTotals, calculateOrderTotals } from './tax-rules';
 import { computeStockBalanceForWarehouse, canIssueStock } from './inventory-rules';
 import { formatDocumentNumber, parseDocumentSequence } from './numbering-rules';
+import { hasPermission, canAccessModule, ErpRole } from './rbac';
 
 test('Double-entry balancing accepts balanced debits and credits', () => {
   const balancedLines = [
@@ -185,3 +186,125 @@ test('Cross-tenant data access validator rejects foreign tenant records', () => 
   assert.equal(validateTenantAccess([], 'tenant-alpha-uuid', true), true);
   assert.equal(validateTenantAccess([], 'tenant-beta-uuid', true), true);
 });
+
+test('RBAC: Accountant can post journals but cannot approve sales orders or change tenant settings', () => {
+  const role: ErpRole = 'accountant';
+  assert.equal(hasPermission(role, 'accounting.journal.post'), true);
+  assert.equal(hasPermission(role, 'accounting.period.close'), true);
+  assert.equal(hasPermission(role, 'accounting.reports.read'), true);
+
+  // Cross-domain boundary checks
+  assert.equal(hasPermission(role, 'sales.order.approve'), false);
+  assert.equal(hasPermission(role, 'settings.tenant.update'), false);
+  assert.equal(hasPermission(role, 'settings.users.manage'), false);
+  assert.equal(hasPermission(role, 'inventory.stock.adjust'), false);
+});
+
+test('RBAC: Sales Staff can create quotes and orders but cannot approve or post invoices', () => {
+  const role: ErpRole = 'sales_staff';
+  assert.equal(hasPermission(role, 'sales.quote.create'), true);
+  assert.equal(hasPermission(role, 'sales.order.create'), true);
+  assert.equal(hasPermission(role, 'sales.invoice.read'), true);
+
+  // Privilege escalation boundary checks
+  assert.equal(hasPermission(role, 'sales.quote.approve'), false);
+  assert.equal(hasPermission(role, 'sales.order.approve'), false);
+  assert.equal(hasPermission(role, 'sales.invoice.post'), false);
+  assert.equal(hasPermission(role, 'accounting.journal.post'), false);
+});
+
+test('RBAC: Auditor has read-only access across financial modules with zero mutation rights', () => {
+  const role: ErpRole = 'auditor';
+  assert.equal(hasPermission(role, 'accounting.journal.read'), true);
+  assert.equal(hasPermission(role, 'accounting.reports.read'), true);
+  assert.equal(hasPermission(role, 'audit.logs.read'), true);
+  assert.equal(hasPermission(role, 'sales.invoice.read'), true);
+  assert.equal(hasPermission(role, 'purchasing.bill.read'), true);
+
+  // Mutation rights must all be false
+  assert.equal(hasPermission(role, 'accounting.journal.create'), false);
+  assert.equal(hasPermission(role, 'accounting.journal.post'), false);
+  assert.equal(hasPermission(role, 'accounting.account.manage'), false);
+  assert.equal(hasPermission(role, 'settings.users.manage'), false);
+  assert.equal(hasPermission(role, 'sales.invoice.create'), false);
+});
+
+test('RBAC: Module accessibility properly gates unauthorized functional areas', () => {
+  assert.equal(canAccessModule('purchasing_staff', 'purchasing'), true);
+  assert.equal(canAccessModule('purchasing_staff', 'inventory'), true); // reads items
+  assert.equal(canAccessModule('purchasing_staff', 'accounting'), false);
+  assert.equal(canAccessModule('purchasing_staff', 'hr'), false);
+  assert.equal(canAccessModule('purchasing_staff', 'projects'), false);
+
+  assert.equal(canAccessModule('warehouse_staff', 'inventory'), true);
+  assert.equal(canAccessModule('warehouse_staff', 'accounting'), false);
+  assert.equal(canAccessModule('warehouse_staff', 'settings'), false);
+
+  assert.equal(canAccessModule('owner', 'settings'), true);
+  assert.equal(canAccessModule('owner', 'accounting'), true);
+  assert.equal(canAccessModule('owner', 'hr'), true);
+});
+
+test('Auth: Password strength validator enforces entropy rules', () => {
+  function getPasswordScore(pwd: string): number {
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[a-z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+    return score;
+  }
+
+  assert.equal(getPasswordScore('123'), 1); // < 8 chars, only digits
+  assert.equal(getPasswordScore('password'), 2); // >= 8 chars, lowercase only
+  assert.equal(getPasswordScore('Password123'), 4); // len, upper, lower, num
+  assert.equal(getPasswordScore('P@ssw0rd!2026'), 5); // maximum strength
+});
+
+test('Auth: Registration validator rejects malformed emails and mismatched passwords', () => {
+  function validateRegistration(email: string, pass: string, confirm: string, name: string): { valid: boolean; error?: string } {
+    if (!name.trim()) return { valid: false, error: 'Full Name is required' };
+    if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email.trim())) return { valid: false, error: 'Invalid email' };
+    if (pass.length < 8) return { valid: false, error: 'Password too short' };
+    if (pass !== confirm) return { valid: false, error: 'Passwords mismatch' };
+    return { valid: true };
+  }
+
+  assert.equal(validateRegistration('', 'Pass1234!', 'Pass1234!', 'John').valid, false);
+  assert.equal(validateRegistration('bad-email', 'Pass1234!', 'Pass1234!', 'John').valid, false);
+  assert.equal(validateRegistration('john@bizchefs.com', 'short', 'short', 'John').valid, false);
+  assert.equal(validateRegistration('john@bizchefs.com', 'Pass1234!', 'Pass9999!', 'John').valid, false);
+  assert.equal(validateRegistration('john@bizchefs.com', 'Pass1234!', 'Pass1234!', 'John').valid, true);
+});
+
+test('Auth: Recovery hash parser accurately extracts type=recovery for static SPA routing', () => {
+  function parseAuthTypeFromHash(hashString: string): string | null {
+    if (!hashString || !hashString.startsWith('#')) return null;
+    const params = new URLSearchParams(hashString.substring(1));
+    return params.get('type');
+  }
+
+  const recoveryHash = '#access_token=test_tok&expires_in=3600&refresh_token=ref_tok&token_type=bearer&type=recovery';
+  const signupHash = '#access_token=test_tok&expires_in=3600&refresh_token=ref_tok&token_type=bearer&type=signup';
+
+  assert.equal(parseAuthTypeFromHash(recoveryHash), 'recovery');
+  assert.equal(parseAuthTypeFromHash(signupHash), 'signup');
+  assert.equal(parseAuthTypeFromHash(''), null);
+});
+
+test('Onboarding: Workspace slug generator normalizes company names safely', () => {
+  function generateTenantSlug(name: string): string {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  assert.equal(generateTenantSlug('Acme Hospitality & Catering'), 'acme-hospitality-catering');
+  assert.equal(generateTenantSlug('BizChefs   Studio   Ltd!'), 'bizchefs-studio-ltd');
+  assert.equal(generateTenantSlug('---Special---Chars***'), 'special-chars');
+});
+
+

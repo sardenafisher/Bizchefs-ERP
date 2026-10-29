@@ -11,9 +11,12 @@ import {
   AlertCircle,
   Plus,
   Shield,
-  Layers
+  Layers,
+  Globe,
+  ExternalLink
 } from 'lucide-react';
 import { Tenant, UserProfile } from '@/lib/types/erp';
+import { BizChefsLogo } from '@/components/brand/BizChefsLogo';
 
 interface HeaderProps {
   activeTenant: Tenant;
@@ -29,6 +32,7 @@ interface HeaderProps {
   onSignOut?: () => void;
   isSupabaseLinked?: boolean;
   activeView: string;
+  onNavigateToLanding?: () => void;
 }
 
 export function Header({
@@ -44,32 +48,104 @@ export function Header({
   onOpenAuthModal,
   onSignOut,
   isSupabaseLinked = false,
-  activeView
+  activeView,
+  onNavigateToLanding
 }: HeaderProps) {
   const [showTenantDropdown, setShowTenantDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showEcosystem, setShowEcosystem] = useState(false);
 
   return (
     <header className="h-16 bg-[#121316] text-white border-b border-[#27272a] flex items-center justify-between px-4 sm:px-6 z-20 sticky top-0">
-      {/* Left: Brand & Company Switcher */}
-      <div className="flex items-center gap-4 sm:gap-6">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-md bg-[#d39e36] text-black font-bold flex items-center justify-center text-lg shadow-sm border border-[#e5a83b]">
-            BC
-          </div>
-          <div className="hidden md:block">
-            <div className="text-sm font-semibold tracking-wide flex items-center gap-2">
-              <span>BizChefs ERP</span>
-              <span className="text-[10px] bg-[#27272a] text-[#d39e36] px-1.5 py-0.5 rounded font-mono font-medium uppercase tracking-wider">
-                Production
-              </span>
-            </div>
-            <div className="text-[11px] text-zinc-400">Commercial Multi-Tenant Platform</div>
-          </div>
+      {/* Left: Brand, Ecosystem & Company Switcher */}
+      <div className="flex items-center gap-3 sm:gap-5">
+        <button
+          type="button"
+          onClick={onNavigateToLanding}
+          className="text-left focus:outline-none cursor-pointer"
+          title="Return to Public Landing Page"
+        >
+          <BizChefsLogo size="sm" variant="horizontal" showSubtitle={true} theme="dark" />
+        </button>
+
+        {onNavigateToLanding && (
+          <button
+            type="button"
+            onClick={onNavigateToLanding}
+            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-zinc-400 hover:text-white rounded-lg bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition"
+          >
+            ← Public Landing
+          </button>
+        )}
+
+        <div className="h-6 w-px bg-zinc-800 hidden md:block" />
+
+        {/* BizChefs Ecosystem Switcher */}
+        <div className="relative hidden lg:block">
+          <button
+            type="button"
+            onClick={() => setShowEcosystem(!showEcosystem)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs transition-colors cursor-pointer"
+            title="BizChefs Commercial Ecosystem"
+          >
+            <Globe className="w-3.5 h-3.5 text-[#d39e36]" />
+            <span className="text-[11px] font-medium">Ecosystem</span>
+            <ChevronDown className="w-3 h-3 text-zinc-500" />
+          </button>
+
+          {showEcosystem && (
+            <>
+              <div className="fixed inset-0 z-30" onClick={() => setShowEcosystem(false)} />
+              <div className="absolute left-0 mt-2 w-64 bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl p-2 z-40 text-xs animate-in fade-in">
+                <div className="px-3 py-1.5 text-[10px] font-semibold text-zinc-400 uppercase tracking-wider border-b border-zinc-800">
+                  BizChefs Digital Platforms
+                </div>
+                <div className="space-y-1 pt-1.5">
+                  <a
+                    href="https://bizchefs.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-800 text-zinc-300 hover:text-white transition-colors"
+                  >
+                    <div>
+                      <div className="font-semibold text-zinc-100 flex items-center gap-1.5">
+                        <span>bizchefs.com</span>
+                        <ExternalLink className="w-3 h-3 text-zinc-400" />
+                      </div>
+                      <div className="text-[10px] text-zinc-400">Corporate Portal & Digital Agency</div>
+                    </div>
+                  </a>
+                  <a
+                    href="https://studio.bizchefs.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-800 text-zinc-300 hover:text-white transition-colors"
+                  >
+                    <div>
+                      <div className="font-semibold text-zinc-100 flex items-center gap-1.5">
+                        <span>studio.bizchefs.com</span>
+                        <ExternalLink className="w-3 h-3 text-zinc-400" />
+                      </div>
+                      <div className="text-[10px] text-zinc-400">BizChefs Creative Studio & Design</div>
+                    </div>
+                  </a>
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-zinc-800/80 border border-[#d39e36]/40 text-[#d39e36]">
+                    <div>
+                      <div className="font-semibold flex items-center gap-1.5">
+                        <span>erp.bizchefs.com</span>
+                        <span className="text-[9px] bg-[#d39e36] text-black px-1 rounded font-bold uppercase">Current</span>
+                      </div>
+                      <div className="text-[10px] text-zinc-300">Commercial ERP & Financial Ledger</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
-        <div className="h-6 w-px bg-zinc-700 hidden sm:block" />
+        <div className="h-6 w-px bg-zinc-800 hidden sm:block" />
 
         {/* Multi-Tenant Switcher */}
         <div className="relative">

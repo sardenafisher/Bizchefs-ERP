@@ -101,15 +101,26 @@ export function Sidebar({ activeView, onSelectView, isPlatformAdmin }: SidebarPr
           <div className="text-[10px] text-zinc-400 leading-relaxed">
             BizChefs ERP Engine compliant with Hostinger Web Hosting &amp; Supabase PostgreSQL.
           </div>
-          <a
-            href="https://bizchefs.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[10px] text-[#d39e36] hover:underline flex items-center gap-1 pt-0.5"
-          >
-            <span>Visit BizChefs Corporate</span>
-            <ExternalLink className="w-2.5 h-2.5" />
-          </a>
+          <div className="flex flex-col gap-1 pt-1 border-t border-zinc-800 text-[10px]">
+            <a
+              href="https://bizchefs.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#d39e36] hover:underline flex items-center justify-between"
+            >
+              <span>bizchefs.com (Corporate)</span>
+              <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+            </a>
+            <a
+              href="https://studio.bizchefs.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-zinc-400 hover:text-white flex items-center justify-between"
+            >
+              <span>studio.bizchefs.com (Studio)</span>
+              <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+            </a>
+          </div>
         </div>
       </div>
     </aside>

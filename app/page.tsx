@@ -24,10 +24,35 @@ import { AdminModule } from '@/components/modules/AdminModule';
 import { SalesInvoice } from '@/lib/types/erp';
 import { ChevronRight, Home, Menu, X, ShieldCheck, Database, Info, AlertTriangle, ArrowRight } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
+import { LandingPage } from '@/components/landing/LandingPage';
 
 export default function ERPPage() {
   const [dbState, setDbState] = useState<ERPDatabaseState>(erpDb.getState());
-  const [activeView, setActiveView] = useState('dashboard');
+  const [pageMode, setPageMode] = useState<'landing' | 'app'>(() => {
+    if (typeof window !== 'undefined') {
+      const search = window.location.search;
+      const hash = window.location.hash;
+      if (
+        search.includes('view=app') ||
+        search.includes('module=') ||
+        search.includes('tenant=') ||
+        hash.includes('access_token=') ||
+        hash.includes('type=recovery')
+      ) {
+        return 'app';
+      }
+    }
+    return 'landing';
+  });
+
+  const [activeView, setActiveView] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const mod = params.get('module');
+      if (mod) return mod;
+    }
+    return 'dashboard';
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Supabase Live Verification & Auth State
@@ -39,7 +64,26 @@ export default function ERPPage() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isNewTenantModalOpen, setIsNewTenantModalOpen] = useState(false);
   const [isSupabaseModalOpen, setIsSupabaseModalOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      const search = window.location.search;
+      if (hash.includes('type=recovery') || search.includes('type=recovery')) {
+        return true;
+      }
+    }
+    return false;
+  });
+  const [authModalMode, setAuthModalMode] = useState<'signin' | 'signup' | 'forgot-password' | 'reset-password' | 'onboarding' | 'tenant-select'>(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      const search = window.location.search;
+      if (hash.includes('type=recovery') || search.includes('type=recovery')) {
+        return 'reset-password';
+      }
+    }
+    return 'signin';
+  });
   const [selectedInvoiceForPrint, setSelectedInvoiceForPrint] = useState<SalesInvoice | null>(null);
 
   const checkSupabaseConnection = useCallback(async () => {
@@ -83,8 +127,12 @@ export default function ERPPage() {
     })();
 
     // Listen to real Supabase Auth events
-    const { data: { subscription } } = authService.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = authService.onAuthStateChange((event, session) => {
       if (!active) return;
+      if (event === 'PASSWORD_RECOVERY') {
+        setAuthModalMode('reset-password');
+        setIsAuthModalOpen(true);
+      }
       setSupabaseUser(session?.user || null);
       void checkSupabaseConnection();
     });
@@ -132,6 +180,44 @@ export default function ERPPage() {
     }
   };
 
+  if (pageMode === 'landing') {
+    return (
+      <>
+        <LandingPage
+          onEnterWorkspace={(mod) => {
+            if (mod) setActiveView(mod);
+            setPageMode('app');
+            if (typeof window !== 'undefined') {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          onOpenAuth={(mode) => {
+            if (mode) setAuthModalMode(mode);
+            setIsAuthModalOpen(true);
+          }}
+          dbState={dbState}
+          supabaseStatus={supabaseStatus}
+          isAuthenticated={supabaseStatus === 'connected'}
+        />
+
+        {/* Global Auth Modal accessible from landing */}
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          initialMode={authModalMode}
+          userTenants={dbState.tenants}
+          onClose={() => setIsAuthModalOpen(false)}
+          onAuthSuccess={async (tenantId) => {
+            await checkSupabaseConnection();
+            if (tenantId) {
+              handleSwitchTenant(tenantId);
+            }
+            setPageMode('app');
+          }}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#fafafa] flex flex-col font-sans">
       {/* Top Header */}
@@ -148,6 +234,7 @@ export default function ERPPage() {
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
         onSignOut={handleSignOut}
         activeView={activeView}
+        onNavigateToLanding={() => setPageMode('landing')}
       />
 
       {/* Main Workspace Frame */}
@@ -372,8 +459,15 @@ export default function ERPPage() {
 
       <AuthModal
         isOpen={isAuthModalOpen}
+        initialMode={authModalMode}
+        userTenants={dbState.tenants}
         onClose={() => setIsAuthModalOpen(false)}
-        onAuthSuccess={checkSupabaseConnection}
+        onAuthSuccess={async (tenantId) => {
+          await checkSupabaseConnection();
+          if (tenantId) {
+            handleSwitchTenant(tenantId);
+          }
+        }}
       />
 
       <DocumentPrintModal

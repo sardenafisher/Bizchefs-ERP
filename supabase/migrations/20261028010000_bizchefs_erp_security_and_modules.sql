@@ -735,3 +735,85 @@ GRANT EXECUTE ON FUNCTION public.current_user_tenant_ids() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.is_super_admin() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.is_tenant_member(UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.get_user_role(UUID) TO authenticated;
+
+-- ==============================================================================
+-- 8. SUPABASE STORAGE BUCKETS & MULTI-TENANT ISOLATION POLICIES
+-- ==============================================================================
+
+-- Create private enterprise storage buckets if storage schema exists
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'storage' AND table_name = 'buckets') THEN
+        INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+        VALUES 
+            ('erp-documents', 'erp-documents', FALSE, 26214400, ARRAY['application/pdf', 'image/jpeg', 'image/png', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']),
+            ('company-assets', 'company-assets', FALSE, 10485760, ARRAY['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp'])
+        ON CONFLICT (id) DO UPDATE SET
+            public = FALSE,
+            file_size_limit = EXCLUDED.file_size_limit,
+            allowed_mime_types = EXCLUDED.allowed_mime_types;
+    END IF;
+END $$;
+
+-- Storage object policies enforcing tenant-prefixed isolation:
+-- File paths MUST follow the convention: '<tenant_id>/<module>/<filename>'
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'storage' AND table_name = 'objects') THEN
+        -- Enable RLS on storage.objects
+        ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+
+        -- 1. Read policy: Authenticated tenant members can view files within their tenant prefix
+        DROP POLICY IF EXISTS "tenant_storage_read" ON storage.objects;
+        CREATE POLICY "tenant_storage_read" ON storage.objects
+            FOR SELECT
+            TO authenticated
+            USING (
+                bucket_id IN ('erp-documents', 'company-assets')
+                AND (
+                    public.is_super_admin()
+                    OR (storage.foldername(name))[1]::uuid IN (SELECT public.current_user_tenant_ids())
+                )
+            );
+
+        -- 2. Insert policy: Authenticated tenant members can upload files only under their own tenant prefix
+        DROP POLICY IF EXISTS "tenant_storage_insert" ON storage.objects;
+        CREATE POLICY "tenant_storage_insert" ON storage.objects
+            FOR INSERT
+            TO authenticated
+            WITH CHECK (
+                bucket_id IN ('erp-documents', 'company-assets')
+                AND (
+                    public.is_super_admin()
+                    OR (storage.foldername(name))[1]::uuid IN (SELECT public.current_user_tenant_ids())
+                )
+            );
+
+        -- 3. Update policy: Authenticated tenant members can update metadata of files under their tenant prefix
+        DROP POLICY IF EXISTS "tenant_storage_update" ON storage.objects;
+        CREATE POLICY "tenant_storage_update" ON storage.objects
+            FOR UPDATE
+            TO authenticated
+            USING (
+                bucket_id IN ('erp-documents', 'company-assets')
+                AND (
+                    public.is_super_admin()
+                    OR (storage.foldername(name))[1]::uuid IN (SELECT public.current_user_tenant_ids())
+                )
+            );
+
+        -- 4. Delete policy: Only authorized tenant users can delete objects under their tenant prefix
+        DROP POLICY IF EXISTS "tenant_storage_delete" ON storage.objects;
+        CREATE POLICY "tenant_storage_delete" ON storage.objects
+            FOR DELETE
+            TO authenticated
+            USING (
+                bucket_id IN ('erp-documents', 'company-assets')
+                AND (
+                    public.is_super_admin()
+                    OR (storage.foldername(name))[1]::uuid IN (SELECT public.current_user_tenant_ids())
+                )
+            );
+    END IF;
+END $$;
+
