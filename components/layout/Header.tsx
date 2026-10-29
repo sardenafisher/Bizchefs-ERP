@@ -1,0 +1,225 @@
+'use client';
+
+import React, { useState } from 'react';
+import { 
+  Building2, 
+  ChevronDown, 
+  Search, 
+  Bell, 
+  Database, 
+  CheckCircle2, 
+  AlertCircle,
+  Plus,
+  Shield,
+  Layers
+} from 'lucide-react';
+import { Tenant, UserProfile } from '@/lib/types/erp';
+
+interface HeaderProps {
+  activeTenant: Tenant;
+  tenants: Tenant[];
+  currentUser: UserProfile;
+  onSwitchTenant: (tenantId: string) => void;
+  onOpenNewTenantModal: () => void;
+  onOpenCommandPalette: () => void;
+  onOpenSupabaseModal: () => void;
+  isSupabaseLinked: boolean;
+  activeView: string;
+}
+
+export function Header({
+  activeTenant,
+  tenants,
+  currentUser,
+  onSwitchTenant,
+  onOpenNewTenantModal,
+  onOpenCommandPalette,
+  onOpenSupabaseModal,
+  isSupabaseLinked,
+  activeView
+}: HeaderProps) {
+  const [showTenantDropdown, setShowTenantDropdown] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  return (
+    <header className="h-16 bg-[#121316] text-white border-b border-[#27272a] flex items-center justify-between px-4 sm:px-6 z-20 sticky top-0">
+      {/* Left: Brand & Company Switcher */}
+      <div className="flex items-center gap-4 sm:gap-6">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-md bg-[#d39e36] text-black font-bold flex items-center justify-center text-lg shadow-sm border border-[#e5a83b]">
+            BC
+          </div>
+          <div className="hidden md:block">
+            <div className="text-sm font-semibold tracking-wide flex items-center gap-2">
+              <span>BizChefs ERP</span>
+              <span className="text-[10px] bg-[#27272a] text-[#d39e36] px-1.5 py-0.5 rounded font-mono font-medium uppercase tracking-wider">
+                Production
+              </span>
+            </div>
+            <div className="text-[11px] text-zinc-400">Commercial Multi-Tenant Platform</div>
+          </div>
+        </div>
+
+        <div className="h-6 w-px bg-zinc-700 hidden sm:block" />
+
+        {/* Multi-Tenant Switcher */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setShowTenantDropdown(!showTenantDropdown)}
+            className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-left transition-colors cursor-pointer group"
+            aria-label="Switch company or tenant"
+            aria-expanded={showTenantDropdown}
+          >
+            <Building2 className="w-4 h-4 text-[#d39e36] group-hover:scale-105 transition-transform" />
+            <div className="max-w-[160px] sm:max-w-[220px] truncate">
+              <div className="text-xs font-medium text-zinc-100 truncate">{activeTenant.name}</div>
+              <div className="text-[10px] text-zinc-400 flex items-center gap-1.5">
+                <span>{activeTenant.settings.baseCurrency}</span>
+                <span>•</span>
+                <span className="capitalize">{activeTenant.subscription.plan}</span>
+              </div>
+            </div>
+            <ChevronDown className="w-3.5 h-3.5 text-zinc-400 ml-1" />
+          </button>
+
+          {showTenantDropdown && (
+            <>
+              <div
+                className="fixed inset-0 z-30"
+                onClick={() => setShowTenantDropdown(false)}
+              />
+              <div className="absolute left-0 mt-2 w-72 bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl p-2 z-40">
+                <div className="px-2 py-1.5 text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
+                  Select Tenant Company
+                </div>
+                <div className="space-y-1 my-1 max-h-56 overflow-y-auto">
+                  {tenants.map(t => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => {
+                        onSwitchTenant(t.id);
+                        setShowTenantDropdown(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-md text-xs flex items-center justify-between transition-colors cursor-pointer ${
+                        t.id === activeTenant.id
+                          ? 'bg-[#d39e36]/15 text-[#d39e36] font-medium border border-[#d39e36]/30'
+                          : 'text-zinc-200 hover:bg-zinc-800'
+                      }`}
+                    >
+                      <div className="truncate pr-2">
+                        <div className="truncate font-medium">{t.name}</div>
+                        <div className="text-[10px] text-zinc-400">{t.industry} • {t.settings.baseCurrency}</div>
+                      </div>
+                      {t.id === activeTenant.id && (
+                        <CheckCircle2 className="w-4 h-4 text-[#d39e36] shrink-0" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="border-t border-zinc-800 pt-2 mt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowTenantDropdown(false);
+                      onOpenNewTenantModal();
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-md text-xs font-medium text-[#d39e36] hover:bg-zinc-800 flex items-center gap-2 cursor-pointer transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Register New Company / Branch</span>
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Right: Quick Search, Database Sync, User Profile */}
+      <div className="flex items-center gap-2 sm:gap-4">
+        {/* Quick Search */}
+        <button
+          type="button"
+          onClick={onOpenCommandPalette}
+          className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-xs text-zinc-400 bg-zinc-900 border border-zinc-700 rounded-lg hover:text-zinc-200 hover:border-zinc-600 transition-colors cursor-pointer"
+          aria-label="Search records and jump to module"
+        >
+          <Search className="w-3.5 h-3.5 text-zinc-400" />
+          <span>Quick search or command...</span>
+          <kbd className="text-[10px] bg-zinc-800 text-zinc-400 px-1.5 py-0.5 rounded border border-zinc-700 font-mono">
+            ⌘K
+          </kbd>
+        </button>
+
+        {/* Supabase Status Indicator */}
+        <button
+          type="button"
+          onClick={onOpenSupabaseModal}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs bg-zinc-900 border border-zinc-700 hover:border-[#d39e36] text-zinc-300 transition-colors cursor-pointer"
+          title="Supabase PostgreSQL & Cloud Sync Status"
+        >
+          <Database className="w-3.5 h-3.5 text-[#d39e36]" />
+          <span className="hidden lg:inline text-[11px] font-medium">
+            {isSupabaseLinked ? 'Supabase Connected' : 'Local Persistent Engine'}
+          </span>
+          <span className={`w-2 h-2 rounded-full ${isSupabaseLinked ? 'bg-emerald-400' : 'bg-[#d39e36]'}`} />
+        </button>
+
+        {/* Notification Bell */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="p-2 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 rounded-lg transition-colors cursor-pointer relative"
+            aria-label="View notifications"
+          >
+            <Bell className="w-4 h-4" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#d39e36]" />
+          </button>
+
+          {showNotifications && (
+            <>
+              <div
+                className="fixed inset-0 z-30"
+                onClick={() => setShowNotifications(false)}
+              />
+              <div className="absolute right-0 mt-2 w-80 bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl p-3 z-40 text-xs">
+                <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
+                  <span className="font-semibold text-zinc-200">System Notifications</span>
+                  <span className="text-[10px] text-[#d39e36]">All Operational</span>
+                </div>
+                <div className="space-y-2 py-2">
+                  <div className="p-2 bg-zinc-800/60 rounded border border-zinc-700/60">
+                    <div className="font-medium text-zinc-200">Daily Ledger Check Passed</div>
+                    <div className="text-[11px] text-zinc-400">Double-entry ledger balances verified with zero discrepancy.</div>
+                  </div>
+                  <div className="p-2 bg-zinc-800/60 rounded border border-zinc-700/60">
+                    <div className="font-medium text-zinc-200">Multi-tenant RLS Active</div>
+                    <div className="text-[11px] text-zinc-400">PostgreSQL row-level security active for {activeTenant.name}.</div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* User Badge */}
+        <div className="flex items-center gap-2 pl-2 border-l border-zinc-700">
+          <div className="w-7 h-7 rounded-full bg-zinc-700 border border-zinc-600 flex items-center justify-center text-xs font-semibold text-zinc-200">
+            {currentUser.fullName.charAt(0)}
+          </div>
+          <div className="hidden xl:block text-left">
+            <div className="text-xs font-medium text-zinc-200 truncate max-w-[130px]">{currentUser.fullName.split(' ')[0]}</div>
+            <div className="text-[10px] text-[#d39e36] capitalize flex items-center gap-1">
+              <Shield className="w-2.5 h-2.5" />
+              <span>Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}

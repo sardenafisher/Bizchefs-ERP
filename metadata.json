@@ -1,0 +1,6 @@
+{
+  "name": "BizChefs ERP",
+  "description": "Multi-tenant commercial ERP software platform by BizChefs featuring Accounting, Sales, Inventory, Purchasing, CRM, and Operations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

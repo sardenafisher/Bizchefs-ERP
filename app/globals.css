@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --brand-gold: #d39e36;
+    --brand-gold-hover: #be8a29;
+    --brand-gold-subtle: #fcf8ee;
+    --brand-dark: #121316;
+    --brand-surface: #18191e;
+  }
+
+  body {
+    background-color: #fafafa;
+    color: #18181b;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Print styling for professional Quotations, Invoices, Delivery Notes & Reports */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .printable-document {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
