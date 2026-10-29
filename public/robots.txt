@@ -1,0 +1,12 @@
+# robots.txt for BizChefs ERP (https://erp.bizchefs.com)
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /forgot-password
+Allow: /reset-password
+Disallow: /app*
+Disallow: /*?*view=app*
+Disallow: /*?*tenant=*
+
+Sitemap: https://erp.bizchefs.com/sitemap.xml

@@ -826,13 +826,26 @@ class ERPDatabase {
     return true;
   }
 
-  public registerNewTenant(name: string, currency: string, timezone: string, taxNumber: string, industry: string): Tenant {
+  public registerNewTenant(
+    name: string,
+    currency: string,
+    timezone: string,
+    taxNumber: string,
+    industry: string,
+    plan: 'starter' | 'growth' | 'enterprise' = 'starter'
+  ): Tenant {
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const limits = {
+      starter: { maxUsers: 5, maxInvoices: 500 },
+      growth: { maxUsers: 15, maxInvoices: 2500 },
+      enterprise: { maxUsers: 50, maxInvoices: 10000 }
+    }[plan];
+
     const newTenant: Tenant = {
       id: `tenant-${Date.now()}`,
       name,
       slug: `${slug}-${Math.floor(Math.random() * 1000)}`,
-      industry: industry || 'General Business',
+      industry: industry || 'Hospitality & Foodservice',
       settings: {
         baseCurrency: currency || 'USD',
         dateFormat: 'YYYY-MM-DD',
@@ -841,11 +854,11 @@ class ERPDatabase {
         taxNumber
       },
       subscription: {
-        plan: 'starter',
+        plan,
         status: 'active',
         validUntil: '2027-12-31T23:59:59Z',
-        maxUsers: 5,
-        maxInvoicesPerMonth: 200
+        maxUsers: limits.maxUsers,
+        maxInvoicesPerMonth: limits.maxInvoices
       },
       createdAt: new Date().toISOString()
     };

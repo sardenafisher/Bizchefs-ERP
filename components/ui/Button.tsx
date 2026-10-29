@@ -26,29 +26,29 @@ export function Button({
 }: ButtonProps) {
   const sizeClasses = {
     sm: 'text-xs px-3 py-1.5 gap-1.5 rounded-lg',
-    md: 'text-sm px-4 py-2 gap-2 rounded-xl',
-    lg: 'text-base px-6 py-3 gap-2.5 rounded-xl font-medium',
+    md: 'text-sm px-4 py-2 gap-2 rounded-lg font-medium',
+    lg: 'text-sm sm:text-base px-5 py-2.5 gap-2.5 rounded-lg font-semibold',
   };
 
   const variantClasses = {
     primary:
-      'bg-gradient-to-r from-[#e5a83b] via-[#d39e36] to-[#b88022] hover:from-[#f0b54d] hover:to-[#c68c29] text-zinc-950 font-semibold shadow-md shadow-[#d39e36]/20 border border-[#f0b54d]/30 active:scale-[0.98] transition-all duration-150',
+      'bg-[#d39e36] hover:bg-[#e5a83b] active:bg-[#b88022] text-zinc-950 font-semibold shadow-xs border border-[#e5a83b]/40 transition-colors',
     secondary:
-      'bg-[#18191e] hover:bg-[#202228] text-white border border-[#27272a] hover:border-zinc-700 shadow-sm transition-all duration-150',
+      'bg-[#13171f] hover:bg-[#1a202c] text-[#f3f4f6] border border-[#262626] hover:border-zinc-600 shadow-xs transition-colors',
     'gold-outline':
-      'bg-transparent hover:bg-[#d39e36]/10 text-[#e5a83b] border border-[#d39e36]/50 hover:border-[#d39e36] transition-all duration-150',
+      'bg-transparent hover:bg-[#d39e36]/10 text-[#d39e36] border border-[#d39e36]/60 hover:border-[#d39e36] transition-colors',
     outline:
-      'bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700 transition-all duration-150',
+      'bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200 border border-zinc-300 dark:border-[#262626] transition-colors',
     ghost:
-      'bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-all duration-150',
+      'bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors',
     danger:
-      'bg-red-600 hover:bg-red-700 text-white font-medium shadow-sm transition-all duration-150',
+      'bg-red-600 hover:bg-red-700 text-white font-medium shadow-xs transition-colors',
   };
 
   return (
     <button
       disabled={disabled || isLoading}
-      className={`inline-flex items-center justify-center select-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+      className={`inline-flex items-center justify-center select-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
         sizeClasses[size]
       } ${variantClasses[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
       {...props}

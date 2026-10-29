@@ -2,18 +2,40 @@
 
 @layer base {
   :root {
+    /* Official BizChefs Brand Tokens */
     --brand-gold: #d39e36;
-    --brand-gold-hover: #be8a29;
+    --brand-gold-hover: #e5a83b;
+    --brand-gold-deep: #b88022;
     --brand-gold-subtle: #fcf8ee;
-    --brand-dark: #121316;
-    --brand-surface: #18191e;
+
+    /* Light Theme Surfaces */
+    --light-bg: #fafafa;
+    --light-surface: #ffffff;
+    --light-text: #171717;
+    --light-border: #e4e4e7;
+
+    /* Dark Theme Surfaces */
+    --dark-bg: #0c0e12;
+    --dark-surface: #121316;
+    --dark-card: #13171f;
+    --dark-text: #f3f4f6;
+    --dark-border: #262626;
+
+    /* Keyboard Focus Indicator */
+    --focus-ring: #2563eb;
   }
 
   body {
-    background-color: #fafafa;
-    color: #18181b;
+    background-color: var(--light-bg);
+    color: var(--light-text);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
+  }
+
+  /* Accessible keyboard focus states across all interactive elements */
+  *:focus-visible {
+    outline: 2px solid var(--focus-ring) !important;
+    outline-offset: 2px !important;
   }
 }
 

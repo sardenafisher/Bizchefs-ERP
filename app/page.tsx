@@ -84,6 +84,7 @@ export default function ERPPage() {
     }
     return 'signin';
   });
+  const [authModalPlan, setAuthModalPlan] = useState<'starter' | 'growth' | 'enterprise'>('growth');
   const [selectedInvoiceForPrint, setSelectedInvoiceForPrint] = useState<SalesInvoice | null>(null);
 
   const checkSupabaseConnection = useCallback(async () => {
@@ -191,8 +192,9 @@ export default function ERPPage() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }
           }}
-          onOpenAuth={(mode) => {
+          onOpenAuth={(mode, plan) => {
             if (mode) setAuthModalMode(mode);
+            if (plan) setAuthModalPlan(plan);
             setIsAuthModalOpen(true);
           }}
           dbState={dbState}
@@ -204,6 +206,7 @@ export default function ERPPage() {
         <AuthModal
           isOpen={isAuthModalOpen}
           initialMode={authModalMode}
+          initialPlan={authModalPlan}
           userTenants={dbState.tenants}
           onClose={() => setIsAuthModalOpen(false)}
           onAuthSuccess={async (tenantId) => {
@@ -460,6 +463,7 @@ export default function ERPPage() {
       <AuthModal
         isOpen={isAuthModalOpen}
         initialMode={authModalMode}
+        initialPlan={authModalPlan}
         userTenants={dbState.tenants}
         onClose={() => setIsAuthModalOpen(false)}
         onAuthSuccess={async (tenantId) => {

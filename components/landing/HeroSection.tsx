@@ -3,28 +3,25 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Card } from '@/components/ui/Card';
 import {
   ArrowRight,
   ShieldCheck,
-  Zap,
-  Layers,
-  Database,
-  Lock,
   CheckCircle2,
   TrendingUp,
   Receipt,
   Package,
   BookOpen,
   Building2,
-  Sparkles,
-  ExternalLink
+  Lock,
+  Calendar,
+  Layers
 } from 'lucide-react';
 import { ERPDatabaseState } from '@/lib/db/database';
 
 interface HeroSectionProps {
   onEnterWorkspace: (module?: string) => void;
   onOpenAuth: (mode?: 'signin' | 'signup') => void;
+  onRequestDemo?: () => void;
   dbState: ERPDatabaseState;
   supabaseStatus: 'unconfigured' | 'unauthenticated' | 'connected' | 'error';
 }
@@ -32,217 +29,197 @@ interface HeroSectionProps {
 export function HeroSection({
   onEnterWorkspace,
   onOpenAuth,
+  onRequestDemo,
   dbState,
   supabaseStatus
 }: HeroSectionProps) {
   const [activePreviewTab, setActivePreviewTab] = useState<'sales' | 'accounting' | 'inventory'>('sales');
 
-  const activeTenant = dbState.tenants.find(t => t.id === dbState.activeTenantId) || dbState.tenants[0];
-
-  // Calculate live numbers
-  const totalSalesRevenue = dbState.salesInvoices
-    .filter(i => i.tenantId === dbState.activeTenantId)
-    .reduce((sum, inv) => sum + inv.grandTotal, 0);
-
-  const inventoryCount = dbState.items
-    .filter(i => i.tenantId === dbState.activeTenantId)
-    .length;
-
-  const journalEntriesCount = dbState.journalEntries
-    .filter(j => j.tenantId === dbState.activeTenantId)
-    .length;
-
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#0c0e12] via-[#101217] to-[#0c0e12] text-white pt-12 pb-24 border-b border-zinc-800">
-      {/* Background Glow & Mesh Elements */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] pointer-events-none opacity-20">
-        <div className="absolute -top-32 left-1/4 w-96 h-96 bg-[#d39e36] rounded-full blur-[140px]" />
-        <div className="absolute top-10 right-1/4 w-80 h-80 bg-[#e5a83b] rounded-full blur-[160px]" />
-      </div>
-
+    <section id="overview" className="relative overflow-hidden bg-[#0c0e12] text-[#f3f4f6] pt-12 pb-20 border-b border-[#262626]">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Badges */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
-          <Badge variant="gold" size="md" className="gap-2 px-3 py-1 bg-[#d39e36]/10">
-            <Sparkles className="w-3.5 h-3.5 text-[#e5a83b]" />
-            Official Enterprise Release
+          <Badge variant="gold" size="md" className="font-semibold">
+            Commercial Subscription Platform
           </Badge>
-          <span className="inline-flex items-center gap-2 text-xs text-zinc-400 bg-zinc-900/90 border border-zinc-800 px-3 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1.5 text-xs text-zinc-400 bg-[#13171f] border border-[#262626] px-3 py-0.5 rounded-md">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            PostgreSQL RLS Zero-Leakage Architecture
+            PostgreSQL Multi-Tenant RLS
           </span>
-          <span className="inline-flex items-center gap-2 text-xs text-zinc-400 bg-zinc-900/90 border border-zinc-800 px-3 py-1 rounded-full hidden sm:inline-flex">
-            <Database className="w-3.5 h-3.5 text-amber-400" />
-            Hostinger Static Export + Supabase Backend
+          <span className="hidden sm:inline-flex items-center gap-1.5 text-xs text-zinc-400 bg-[#13171f] border border-[#262626] px-3 py-0.5 rounded-md">
+            <Lock className="w-3.5 h-3.5 text-zinc-400" />
+            Strict Double-Entry Ledger
           </span>
         </div>
 
-        {/* Main Headline */}
-        <div className="text-center max-w-4xl mx-auto space-y-6">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.12]">
-            The Enterprise Operating System for{' '}
-            <span className="bg-gradient-to-r from-[#ffd166] via-[#e5a83b] to-[#b88022] bg-clip-text text-transparent">
-              Multi-Tenant Commercial Hospitality
-            </span>
+        {/* Main Commercial Headline */}
+        <div className="text-center max-w-4xl mx-auto space-y-5">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+            Centralized ERP for Commercial Foodservice, Production & Multi-Branch Hospitality
           </h1>
 
-          <p className="text-lg sm:text-xl text-zinc-300 max-w-3xl mx-auto font-normal leading-relaxed">
-            Strict double-entry ledger enforcement, supply chain purchasing, multi-location inventory,
-            and row-level tenant security — engineered for high-throughput culinary and commercial operations.
+          <p className="text-sm sm:text-lg text-zinc-300 max-w-2xl mx-auto font-normal leading-relaxed">
+            Eliminate operational fragmentation. Connect CRM sales orders, multi-warehouse inventory valuation,
+            procurement matching, and strict double-entry ledger compliance under one unified subscription service.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+          {/* Business-Critical CTAs */}
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
             <Button
               variant="primary"
               size="lg"
-              rightIcon={<ArrowRight className="w-5 h-5" />}
-              onClick={() => onEnterWorkspace('dashboard')}
-              className="px-8 shadow-xl shadow-[#d39e36]/25"
-            >
-              Launch Live ERP Workspace
-            </Button>
-            <Button
-              variant="secondary"
-              size="lg"
-              leftIcon={<Layers className="w-4 h-4 text-[#e5a83b]" />}
+              rightIcon={<ArrowRight className="w-4 h-4" />}
               onClick={() => {
-                const el = document.getElementById('modules');
-                el?.scrollIntoView({ behavior: 'smooth' });
+                const el = document.getElementById('pricing');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              Explore 9 Core Modules
+              View Subscription Plans & Pricing
             </Button>
+
+            {onRequestDemo && (
+              <Button
+                variant="secondary"
+                size="lg"
+                leftIcon={<Calendar className="w-4 h-4 text-[#d39e36]" />}
+                onClick={onRequestDemo}
+              >
+                Request a Live Demo
+              </Button>
+            )}
+
             <Button
               variant="gold-outline"
               size="lg"
-              onClick={() => onOpenAuth('signup')}
+              onClick={() => onEnterWorkspace('dashboard')}
             >
-              Register Tenant
+              Explore Live Demo Workspace
             </Button>
           </div>
 
-          {/* Quick Credibility Footnote */}
-          <div className="flex flex-wrap items-center justify-center gap-6 pt-4 text-xs text-zinc-400">
+          {/* Verified Capability Highlights */}
+          <div className="flex flex-wrap items-center justify-center gap-6 pt-3 text-xs text-zinc-400">
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              Real Double-Entry Accounting
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#d39e36]" />
+              Double-Entry General Ledger (Debits = Credits)
             </span>
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              100% Production Static Hostinger Ready
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#d39e36]" />
+              Multi-Warehouse Stock Valuations
             </span>
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              Automated Document Numbering
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#d39e36]" />
+              Egyptian Pound (EGP) & Multi-Currency
             </span>
           </div>
         </div>
 
-        {/* Live Interactive ERP Dashboard Preview Container */}
-        <div className="mt-16 relative rounded-2xl bg-[#121316] border border-[#27272a] shadow-2xl overflow-hidden">
-          {/* Mock Browser Header / Title Bar */}
-          <div className="flex flex-wrap items-center justify-between px-6 py-3.5 bg-[#090a0d] border-b border-zinc-800 text-xs">
-            <div className="flex items-center gap-3">
+        {/* Sanitized Commercial Demonstration Preview Container */}
+        <div className="mt-14 relative rounded-xl bg-[#13171f] border border-[#262626] shadow-xl overflow-hidden">
+          {/* Frame Header */}
+          <div className="flex flex-wrap items-center justify-between px-5 py-3 bg-[#0c0e12] border-b border-[#262626] text-xs">
+            <div className="flex items-center gap-2.5">
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-red-500/80" />
-                <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                <span className="w-3 h-3 rounded-full bg-emerald-500/80" />
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
+                <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
               </div>
-              <span className="font-mono text-zinc-400 pl-2 hidden sm:inline">
-                https://erp.bizchefs.com/app
+              <span className="font-mono text-zinc-500 pl-1 text-[11px] hidden sm:inline">
+                erp.bizchefs.com/app
               </span>
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5 text-zinc-300">
-                <Building2 className="w-3.5 h-3.5 text-[#e5a83b]" />
-                <span className="font-medium text-white">{activeTenant?.name || 'Active Tenant'}</span>
-                <span className="text-zinc-500">({activeTenant?.settings?.baseCurrency || 'USD'})</span>
+              <span className="text-[11px] text-zinc-400 bg-zinc-900 px-2 py-0.5 rounded border border-[#262626]">
+                Interactive Software Preview (Demonstration Data)
               </span>
-              <span className="hidden md:inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">
-                <Lock className="w-3 h-3 text-emerald-400" />
-                RLS Isolated
+              <span className="hidden md:inline-flex items-center gap-1 text-[11px] text-emerald-400">
+                <ShieldCheck className="w-3 h-3" />
+                RLS Protected
               </span>
             </div>
           </div>
 
           {/* Quick Metrics Bar Inside Preview */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-6 bg-[#15161c] border-b border-zinc-800/80">
-            <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 p-5 bg-[#10141b] border-b border-[#262626]">
+            <div className="p-3.5 rounded-lg bg-[#13171f] border border-[#262626]">
               <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
-                <span>Total Invoiced</span>
-                <TrendingUp className="w-4 h-4 text-emerald-400" />
+                <span>Monthly Billed Revenue</span>
+                <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
               </div>
-              <div className="text-xl font-bold text-white font-mono">
-                ${totalSalesRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              <div className="text-lg font-bold text-white font-mono">
+                184,500 EGP
               </div>
-              <div className="text-[11px] text-zinc-500 mt-1">Verified Sales Orders</div>
+              <div className="text-[10px] text-zinc-500 mt-0.5">Automated Tax & Sequential Invoicing</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800">
+            <div className="p-3.5 rounded-lg bg-[#13171f] border border-[#262626]">
               <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
-                <span>Active SKUs</span>
-                <Package className="w-4 h-4 text-[#e5a83b]" />
+                <span>Active Foodservice SKUs</span>
+                <Package className="w-3.5 h-3.5 text-[#d39e36]" />
               </div>
-              <div className="text-xl font-bold text-white font-mono">
-                {inventoryCount} Items
+              <div className="text-lg font-bold text-white font-mono">
+                {dbState.items.length} Tracked SKUs
               </div>
-              <div className="text-[11px] text-zinc-500 mt-1">Warehouse Stock Managed</div>
+              <div className="text-[10px] text-zinc-500 mt-0.5">Reorder Point Thresholds Active</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800">
+            <div className="p-3.5 rounded-lg bg-[#13171f] border border-[#262626]">
               <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
-                <span>General Ledger</span>
-                <BookOpen className="w-4 h-4 text-blue-400" />
+                <span>General Ledger Postings</span>
+                <BookOpen className="w-3.5 h-3.5 text-blue-400" />
               </div>
-              <div className="text-xl font-bold text-white font-mono">
-                {journalEntriesCount} Entries
+              <div className="text-lg font-bold text-white font-mono">
+                {dbState.journalEntries.length} Entries
               </div>
-              <div className="text-[11px] text-zinc-500 mt-1">Balanced Double-Entry</div>
+              <div className="text-[10px] text-zinc-500 mt-0.5">Debits = Credits Strictly Balanced</div>
             </div>
 
-            <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800">
+            <div className="p-3.5 rounded-lg bg-[#13171f] border border-[#262626]">
               <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
-                <span>Supabase Status</span>
-                <Database className="w-4 h-4 text-emerald-400" />
+                <span>Multi-Tenant Architecture</span>
+                <Building2 className="w-3.5 h-3.5 text-[#d39e36]" />
               </div>
-              <div className="text-sm font-semibold text-emerald-400 mt-1 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                {supabaseStatus === 'connected' ? 'Cloud Verified' : 'Engine Ready'}
+              <div className="text-sm font-semibold text-emerald-400 mt-0.5 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                Tenant Isolated
               </div>
-              <div className="text-[11px] text-zinc-500 mt-0.5">PostgreSQL Migrations Up</div>
+              <div className="text-[10px] text-zinc-500 mt-0.5">PostgreSQL Row-Level Security</div>
             </div>
           </div>
 
           {/* Tab Selector for Live ERP Preview Content */}
-          <div className="flex items-center justify-between px-6 pt-4 bg-[#121316] border-b border-zinc-800">
+          <div className="flex items-center justify-between px-5 pt-3 bg-[#13171f] border-b border-[#262626]">
             <div className="flex items-center gap-2 overflow-x-auto">
               <button
+                type="button"
                 onClick={() => setActivePreviewTab('sales')}
-                className={`px-4 py-2 text-xs font-semibold rounded-t-lg transition border-b-2 ${
+                className={`px-3 py-1.5 text-xs font-semibold rounded-t-md transition-colors border-b-2 cursor-pointer ${
                   activePreviewTab === 'sales'
-                    ? 'border-[#e5a83b] text-[#e5a83b] bg-zinc-900/60'
+                    ? 'border-[#d39e36] text-[#d39e36] bg-[#0c0e12]'
                     : 'border-transparent text-zinc-400 hover:text-white'
                 }`}
               >
-                Sales Invoices & CRM
+                Sales Invoices & Quotations
               </button>
               <button
+                type="button"
                 onClick={() => setActivePreviewTab('accounting')}
-                className={`px-4 py-2 text-xs font-semibold rounded-t-lg transition border-b-2 ${
+                className={`px-3 py-1.5 text-xs font-semibold rounded-t-md transition-colors border-b-2 cursor-pointer ${
                   activePreviewTab === 'accounting'
-                    ? 'border-[#e5a83b] text-[#e5a83b] bg-zinc-900/60'
+                    ? 'border-[#d39e36] text-[#d39e36] bg-[#0c0e12]'
                     : 'border-transparent text-zinc-400 hover:text-white'
                 }`}
               >
                 Double-Entry Ledger Audit
               </button>
               <button
+                type="button"
                 onClick={() => setActivePreviewTab('inventory')}
-                className={`px-4 py-2 text-xs font-semibold rounded-t-lg transition border-b-2 ${
+                className={`px-3 py-1.5 text-xs font-semibold rounded-t-md transition-colors border-b-2 cursor-pointer ${
                   activePreviewTab === 'inventory'
-                    ? 'border-[#e5a83b] text-[#e5a83b] bg-zinc-900/60'
+                    ? 'border-[#d39e36] text-[#d39e36] bg-[#0c0e12]'
                     : 'border-transparent text-zinc-400 hover:text-white'
                 }`}
               >
@@ -251,64 +228,57 @@ export function HeroSection({
             </div>
 
             <button
+              type="button"
               onClick={() => onEnterWorkspace(activePreviewTab)}
-              className="text-xs font-medium text-[#e5a83b] hover:text-[#ffd166] flex items-center gap-1 pb-2"
+              className="text-xs font-medium text-[#d39e36] hover:text-[#e5a83b] flex items-center gap-1 pb-1.5 cursor-pointer"
             >
-              <span>Open in Full Screen</span>
+              <span>Launch Full Workspace</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          {/* Preview Tab Body */}
-          <div className="p-6 bg-[#0e1014] min-h-[220px]">
+          {/* Sanitized Demonstration Tables */}
+          <div className="p-5 bg-[#0e1117] min-h-[200px]">
             {activePreviewTab === 'sales' && (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-zinc-800 text-zinc-400 uppercase text-[10px] tracking-wider">
-                      <th className="pb-3 font-semibold">Document #</th>
-                      <th className="pb-3 font-semibold">Customer</th>
-                      <th className="pb-3 font-semibold">Issue Date</th>
-                      <th className="pb-3 font-semibold">Total Amount</th>
-                      <th className="pb-3 font-semibold">Status</th>
-                      <th className="pb-3 font-semibold text-right">Action</th>
+                    <tr className="border-b border-[#262626] text-zinc-400 uppercase text-[10px] tracking-wider">
+                      <th className="pb-2.5 font-semibold">Document #</th>
+                      <th className="pb-2.5 font-semibold">Account / Client</th>
+                      <th className="pb-2.5 font-semibold">Issue Date</th>
+                      <th className="pb-2.5 font-semibold">Total Amount</th>
+                      <th className="pb-2.5 font-semibold">Status</th>
+                      <th className="pb-2.5 font-semibold text-right">Verification</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-800/60">
-                    {dbState.salesInvoices
-                      .filter(i => i.tenantId === dbState.activeTenantId)
-                      .slice(0, 3)
-                      .map(inv => (
-                        <tr key={inv.id} className="hover:bg-zinc-900/50">
-                          <td className="py-3 font-mono font-bold text-[#e5a83b]">{inv.invoiceNumber}</td>
-                          <td className="py-3 text-zinc-200">{inv.customerName}</td>
-                          <td className="py-3 text-zinc-400">{inv.date}</td>
-                          <td className="py-3 font-mono font-semibold text-white">
-                            ${inv.grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                          </td>
-                          <td className="py-3">
-                            <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                                inv.status === 'paid'
-                                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                                  : inv.status === 'posted'
-                                  ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30'
-                                  : 'bg-zinc-800 text-zinc-300 border border-zinc-700'
-                              }`}
-                            >
-                              {inv.status}
-                            </span>
-                          </td>
-                          <td className="py-3 text-right">
-                            <button
-                              onClick={() => onEnterWorkspace('sales')}
-                              className="text-xs text-[#e5a83b] hover:underline font-medium"
-                            >
-                              View Invoice →
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                  <tbody className="divide-y divide-[#262626]/50">
+                    {dbState.salesInvoices.slice(0, 3).map((inv) => (
+                      <tr key={inv.id} className="hover:bg-[#13171f]/50">
+                        <td className="py-2.5 font-mono font-bold text-[#d39e36]">{inv.invoiceNumber}</td>
+                        <td className="py-2.5 text-zinc-200">{inv.customerName}</td>
+                        <td className="py-2.5 text-zinc-400">{inv.date}</td>
+                        <td className="py-2.5 font-mono font-semibold text-white">
+                          ${inv.grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td className="py-2.5">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                              inv.status === 'paid'
+                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                                : inv.status === 'posted'
+                                ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30'
+                                : 'bg-zinc-800 text-zinc-300 border border-zinc-700'
+                            }`}
+                          >
+                            {inv.status}
+                          </span>
+                        </td>
+                        <td className="py-2.5 text-right font-mono text-[11px] text-zinc-400">
+                          Verified Document
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -316,27 +286,24 @@ export function HeroSection({
 
             {activePreviewTab === 'accounting' && (
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs text-zinc-400 pb-2 border-b border-zinc-800">
+                <div className="flex items-center justify-between text-xs text-zinc-400 pb-2 border-b border-[#262626]">
                   <span className="font-semibold text-zinc-200">Balanced Journal Postings (Debits = Credits)</span>
                   <span className="font-mono text-emerald-400">Status: In Balance (0.00 Variance)</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {dbState.journalEntries
-                    .filter(j => j.tenantId === dbState.activeTenantId)
-                    .slice(0, 2)
-                    .map(entry => (
-                      <div key={entry.id} className="p-3 rounded-lg bg-zinc-900/70 border border-zinc-800 text-xs space-y-1.5">
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono font-bold text-[#e5a83b]">{entry.entryNumber}</span>
-                          <span className="text-[10px] text-zinc-500">{entry.date}</span>
-                        </div>
-                        <p className="text-zinc-300 font-medium truncate">{entry.memo}</p>
-                        <div className="flex items-center justify-between pt-1 border-t border-zinc-800 font-mono text-[11px]">
-                          <span className="text-zinc-400">Total Debit / Credit:</span>
-                          <span className="text-white font-bold">${entry.totalDebit.toLocaleString()}</span>
-                        </div>
+                  {dbState.journalEntries.slice(0, 2).map((entry) => (
+                    <div key={entry.id} className="p-3 rounded-lg bg-[#13171f] border border-[#262626] text-xs space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono font-bold text-[#d39e36]">{entry.entryNumber}</span>
+                        <span className="text-[10px] text-zinc-500">{entry.date}</span>
                       </div>
-                    ))}
+                      <p className="text-zinc-300 font-medium truncate">{entry.memo}</p>
+                      <div className="flex items-center justify-between pt-1 border-t border-[#262626] font-mono text-[11px]">
+                        <span className="text-zinc-400">Total Debit / Credit:</span>
+                        <span className="text-white font-bold">${entry.totalDebit.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -345,60 +312,59 @@ export function HeroSection({
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-zinc-800 text-zinc-400 uppercase text-[10px] tracking-wider">
-                      <th className="pb-3 font-semibold">SKU Code</th>
-                      <th className="pb-3 font-semibold">Item Name</th>
-                      <th className="pb-3 font-semibold">Category</th>
-                      <th className="pb-3 font-semibold">Cost Price</th>
-                      <th className="pb-3 font-semibold">Reorder Pt</th>
-                      <th className="pb-3 font-semibold text-right">Action</th>
+                    <tr className="border-b border-[#262626] text-zinc-400 uppercase text-[10px] tracking-wider">
+                      <th className="pb-2.5 font-semibold">SKU Code</th>
+                      <th className="pb-2.5 font-semibold">Item Name</th>
+                      <th className="pb-2.5 font-semibold">Category</th>
+                      <th className="pb-2.5 font-semibold">Cost Price</th>
+                      <th className="pb-2.5 font-semibold">Reorder Pt</th>
+                      <th className="pb-2.5 font-semibold text-right">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-800/60">
-                    {dbState.items
-                      .filter(i => i.tenantId === dbState.activeTenantId)
-                      .slice(0, 3)
-                      .map(item => (
-                        <tr key={item.id} className="hover:bg-zinc-900/50">
-                          <td className="py-3 font-mono font-bold text-zinc-300">{item.sku}</td>
-                          <td className="py-3 text-white font-medium">{item.name}</td>
-                          <td className="py-3 text-zinc-400">{item.category}</td>
-                          <td className="py-3 font-mono text-zinc-300">${item.costPrice.toFixed(2)}</td>
-                          <td className="py-3 font-mono font-semibold text-emerald-400">
-                            {item.reorderPoint} {item.uom}
-                          </td>
-                          <td className="py-3 text-right">
-                            <button
-                              onClick={() => onEnterWorkspace('inventory')}
-                              className="text-xs text-[#e5a83b] hover:underline font-medium"
-                            >
-                              Manage Stock →
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                  <tbody className="divide-y divide-[#262626]/50">
+                    {dbState.items.slice(0, 3).map((item) => (
+                      <tr key={item.id} className="hover:bg-[#13171f]/50">
+                        <td className="py-2.5 font-mono font-bold text-zinc-300">{item.sku}</td>
+                        <td className="py-2.5 text-white font-medium">{item.name}</td>
+                        <td className="py-2.5 text-zinc-400">{item.category}</td>
+                        <td className="py-2.5 font-mono text-zinc-300">${item.costPrice.toFixed(2)}</td>
+                        <td className="py-2.5 font-mono font-semibold text-emerald-400">
+                          {item.reorderPoint} {item.uom}
+                        </td>
+                        <td className="py-2.5 text-right font-mono text-[11px] text-zinc-400">
+                          Stock Monitored
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
             )}
           </div>
 
-          {/* Launch Workspace Banner */}
-          <div className="p-4 bg-gradient-to-r from-zinc-900 via-[#18191e] to-zinc-900 border-t border-zinc-800 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs text-zinc-300 font-medium">
-                Live interactive environment running. Full data operations enabled.
-              </span>
+          {/* Bottom Bar */}
+          <div className="p-4 bg-[#10141b] border-t border-[#262626] flex flex-wrap items-center justify-between gap-3">
+            <div className="text-xs text-zinc-400">
+              Commercial multi-tenant architecture. Every tenant operates in strict database isolation.
             </div>
-            <Button
-              variant="primary"
-              size="sm"
-              rightIcon={<ArrowRight className="w-4 h-4" />}
-              onClick={() => onEnterWorkspace(activePreviewTab)}
-            >
-              Enter Full ERP Workspace
-            </Button>
+            <div className="flex items-center gap-2">
+              {onRequestDemo && (
+                <Button variant="ghost" size="sm" onClick={onRequestDemo}>
+                  Request Guided Demo
+                </Button>
+              )}
+              <Button
+                variant="primary"
+                size="sm"
+                rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
+                onClick={() => {
+                  const el = document.getElementById('pricing');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                Choose Subscription Plan
+              </Button>
+            </div>
           </div>
         </div>
       </div>

@@ -5,15 +5,15 @@ import React from 'react';
 export function Card({
   children,
   className = '',
-  goldGlow = false,
+  goldAccent = false,
   ...props
-}: React.HTMLAttributes<HTMLDivElement> & { goldGlow?: boolean }) {
+}: React.HTMLAttributes<HTMLDivElement> & { goldAccent?: boolean }) {
   return (
     <div
-      className={`rounded-2xl bg-[#121316] border border-[#27272a] text-zinc-100 transition-all ${
-        goldGlow
-          ? 'shadow-lg shadow-[#d39e36]/10 hover:border-[#d39e36]/50 hover:shadow-[#d39e36]/15'
-          : 'hover:border-zinc-700'
+      className={`rounded-xl bg-[#13171f] border text-[#f3f4f6] transition-colors ${
+        goldAccent
+          ? 'border-[#d39e36]/40 hover:border-[#d39e36]'
+          : 'border-[#262626] hover:border-zinc-700'
       } ${className}`}
       {...props}
     >
@@ -28,7 +28,7 @@ export function CardHeader({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`p-6 pb-4 flex flex-col space-y-1.5 ${className}`} {...props}>
+    <div className={`p-6 pb-3 flex flex-col space-y-1.5 ${className}`} {...props}>
       {children}
     </div>
   );
@@ -41,7 +41,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={`text-lg font-semibold tracking-tight text-white ${className}`}
+      className={`text-base font-semibold tracking-tight text-[#f3f4f6] ${className}`}
       {...props}
     >
       {children}
@@ -55,7 +55,7 @@ export function CardDescription({
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={`text-sm text-zinc-400 leading-relaxed ${className}`} {...props}>
+    <p className={`text-xs text-zinc-400 leading-relaxed ${className}`} {...props}>
       {children}
     </p>
   );
@@ -80,7 +80,7 @@ export function CardFooter({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={`p-6 pt-0 flex items-center border-t border-[#27272a]/60 mt-4 pt-4 ${className}`}
+      className={`p-6 pt-0 flex items-center border-t border-[#262626] mt-4 pt-4 ${className}`}
       {...props}
     >
       {children}

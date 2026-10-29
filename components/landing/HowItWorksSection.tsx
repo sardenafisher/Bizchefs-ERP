@@ -3,66 +3,66 @@
 import React from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { UserCheck, Sliders, ArrowLeftRight, FileText } from 'lucide-react';
+import { Layers, UserPlus, Sliders, CheckCircle2 } from 'lucide-react';
 
 export function HowItWorksSection() {
   const steps = [
     {
       step: '01',
-      title: 'Tenant Provisioning & Identity',
-      icon: <UserCheck className="w-5 h-5 text-[#e5a83b]" />,
+      title: 'Compare Subscription Tiers',
+      icon: <Layers className="w-5 h-5 text-[#d39e36]" />,
       description:
-        'Create a corporate identity via Supabase Auth. The system automatically creates a tenant record, seeds default permissions, and binds your user profile to your secure tenant ID.'
+        'Evaluate your monthly invoice volume, number of users, and warehouse count across the Starter, Growth, and Enterprise subscription plans.'
     },
     {
       step: '02',
-      title: 'Chart of Accounts & Fiscal Year',
-      icon: <Sliders className="w-5 h-5 text-[#e5a83b]" />,
+      title: 'Choose a Plan or Request a Demo',
+      icon: <UserPlus className="w-5 h-5 text-[#d39e36]" />,
       description:
-        'Initialize standard GAAP/IFRS account trees (Assets, Liabilities, Equity, Revenue, COGS, Expenses), define your reporting currency, tax registration rates, and fiscal periods.'
+        'Select your preferred tier to begin company onboarding, or request a customized consultation with our hospitality operations team.'
     },
     {
       step: '03',
-      title: 'Commercial Transaction Lifecycle',
-      icon: <ArrowLeftRight className="w-5 h-5 text-[#e5a83b]" />,
+      title: 'Configure Your Organization Profile',
+      icon: <Sliders className="w-5 h-5 text-[#d39e36]" />,
       description:
-        'Generate quotations and sales orders. When fulfilled, one-click posting updates inventory SKU counts and invokes post_journal_entry() to book revenue and accounts receivable.'
+        'Register your company identity, base currency (EGP, USD, or EUR), tax registration ID, and default fiscal calendar in the onboarding flow.'
     },
     {
       step: '04',
-      title: 'Audit Trails & Document Printing',
-      icon: <FileText className="w-5 h-5 text-[#e5a83b]" />,
+      title: 'Operate in Your Dedicated Workspace',
+      icon: <CheckCircle2 className="w-5 h-5 text-[#d39e36]" />,
       description:
-        'Produce printable professional invoices, delivery notes, and purchase orders. Run real-time Trial Balance and Income Statement reports with immutable historical audit logs.'
+        'Access your isolated ERP tenant at erp.bizchefs.com to issue quotations, post verified invoices, track warehouse stock, and audit general ledger balances.'
     }
   ];
 
   return (
-    <section id="how-it-works" className="py-24 bg-[#0c0e12] text-white border-b border-zinc-800">
+    <section id="how-it-works" className="py-24 bg-[#0c0e12] text-[#f3f4f6] border-b border-[#262626]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <Badge variant="gold" size="md">
-            Workflow Architecture
+            Subscription & Onboarding Model
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-            From Onboarding to Balance Sheet
+            How to Get Started with BizChefs ERP
           </h2>
-          <p className="text-base sm:text-lg text-zinc-400">
-            A seamless, compliance-grade operational sequence designed to eliminate manual spreadsheet reconciliation.
+          <p className="text-sm sm:text-base text-zinc-400">
+            A straightforward, compliance-oriented process to transition your hospitality operations into a centralized ERP.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {steps.map((s, idx) => (
-            <Card key={idx} className="relative bg-[#121316] hover:border-[#d39e36]/40 transition-all">
-              <div className="absolute top-4 right-4 font-mono font-black text-2xl text-zinc-800 selection:bg-none">
+            <Card key={idx} className="relative hover:border-zinc-700 transition-colors">
+              <div className="absolute top-4 right-4 font-mono font-bold text-xl text-zinc-700">
                 {s.step}
               </div>
               <CardHeader className="space-y-3">
-                <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-[#0c0e12] border border-[#262626] flex items-center justify-center">
                   {s.icon}
                 </div>
-                <CardTitle className="text-base text-white font-semibold">
+                <CardTitle className="text-sm text-white font-semibold">
                   {s.title}
                 </CardTitle>
               </CardHeader>

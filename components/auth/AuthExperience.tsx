@@ -31,6 +31,7 @@ export type AuthMode = 'signin' | 'signup' | 'forgot-password' | 'reset-password
 
 interface AuthExperienceProps {
   initialMode?: AuthMode;
+  initialPlan?: 'starter' | 'growth' | 'enterprise';
   userTenants?: Tenant[];
   onAuthSuccess: (tenantId?: string) => void;
   onCancel?: () => void;
@@ -39,11 +40,23 @@ interface AuthExperienceProps {
 
 export function AuthExperience({
   initialMode = 'signin',
+  initialPlan = 'growth',
   userTenants = [],
   onAuthSuccess,
   onCancel,
   isModal = false
 }: AuthExperienceProps) {
+  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'growth' | 'enterprise'>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const p = params.get('plan');
+      if (p === 'starter' || p === 'growth' || p === 'enterprise') {
+        return p;
+      }
+    }
+    return initialPlan || 'growth';
+  });
+
   const [mode, setMode] = useState<AuthMode>(() => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash;
@@ -274,10 +287,10 @@ export function AuthExperience({
 
   return (
     <div className={`w-full ${isModal ? 'max-w-xl mx-auto' : 'min-h-[85vh] flex items-center justify-center p-4'}`}>
-      <div className="w-full bg-[#18191e] border border-[#27272a] rounded-2xl shadow-2xl overflow-hidden flex flex-col text-zinc-100">
+      <div className="w-full bg-[#13171f] border border-[#262626] rounded-xl shadow-2xl overflow-hidden flex flex-col text-[#f3f4f6]">
         
         {/* Top Branding Banner */}
-        <div className="px-6 py-5 bg-[#121316] border-b border-[#27272a] flex items-center justify-between">
+        <div className="px-6 py-4 bg-[#0c0e12] border-b border-[#262626] flex items-center justify-between">
           <BizChefsLogo size="md" variant="horizontal" showSubtitle={true} theme="dark" />
           
           <div className="flex items-center gap-2">
@@ -615,7 +628,7 @@ export function AuthExperience({
 
               {/* Mode Switcher Tabs (Sign In / Register) */}
               {(mode === 'signin' || mode === 'signup') && (
-                <div className="flex border-b border-zinc-800 text-xs">
+                <div className="flex border-b border-[#262626] text-xs">
                   <button
                     type="button"
                     onClick={() => {
@@ -644,6 +657,37 @@ export function AuthExperience({
                   >
                     Register Organization
                   </button>
+                </div>
+              )}
+
+              {/* Selected Plan indicator in Sign Up */}
+              {mode === 'signup' && (
+                <div className="p-3 bg-[#0c0e12] border border-[#262626] rounded-lg space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-zinc-400 font-medium">Subscription Tier:</span>
+                    <span className="text-[#d39e36] font-semibold uppercase">{selectedPlan} Plan</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {(['starter', 'growth', 'enterprise'] as const).map(p => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => setSelectedPlan(p)}
+                        className={`py-1 px-1.5 rounded text-[11px] font-medium capitalize border transition-colors cursor-pointer ${
+                          selectedPlan === p
+                            ? 'bg-[#d39e36]/15 border-[#d39e36] text-[#d39e36]'
+                            : 'bg-[#13171f] border-[#262626] text-zinc-400 hover:text-white'
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="text-[10px] text-zinc-500">
+                    {selectedPlan === 'starter' && '1,950 EGP/mo • 5 Team Users • 1 Warehouse'}
+                    {selectedPlan === 'growth' && '4,750 EGP/mo • 15 Team Users • 5 Warehouses (Recommended)'}
+                    {selectedPlan === 'enterprise' && 'Custom Agreement • 50+ Users • Unlimited Warehouses'}
+                  </div>
                 </div>
               )}
 
