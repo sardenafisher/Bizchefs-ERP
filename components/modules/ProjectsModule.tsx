@@ -24,7 +24,7 @@ export function ProjectsModule({ state }: ProjectsModuleProps) {
   const [prjName, setPrjName] = useState('');
   const [prjCustomerId, setPrjCustomerId] = useState(customers[0]?.id || '');
   const [prjBudget, setPrjBudget] = useState(10000);
-  const [prjDeadline, setPrjDeadline] = useState(new Date(Date.now() + 60 * 86400000).toISOString().split('T')[0]);
+  const [prjDeadline, setPrjDeadline] = useState(() => new Date(Date.now() + 60 * 86400000).toISOString().split('T')[0]);
 
   const handleSaveProject = (e: React.FormEvent) => {
     e.preventDefault();

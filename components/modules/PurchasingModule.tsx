@@ -23,8 +23,8 @@ export function PurchasingModule({ state }: PurchasingModuleProps) {
   // New PO State
   const [selectedSupplierId, setSelectedSupplierId] = useState(suppliers[0]?.id || '');
   const [selectedWarehouseId, setSelectedWarehouseId] = useState(warehouses[0]?.id || '');
-  const [orderDate, setOrderDate] = useState(new Date().toISOString().split('T')[0]);
-  const [expectedDate, setExpectedDate] = useState(new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0]);
+  const [orderDate, setOrderDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [expectedDate, setExpectedDate] = useState(() => new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0]);
   const [poLines, setPoLines] = useState<Array<{
     itemId: string;
     itemSku: string;

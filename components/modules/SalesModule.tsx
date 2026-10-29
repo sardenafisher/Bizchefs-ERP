@@ -44,8 +44,8 @@ export function SalesModule({ state, onViewInvoice, initialTab = 'invoices' }: S
 
   // ==================== NEW INVOICE FORM STATE ====================
   const [selectedCustomerId, setSelectedCustomerId] = useState(customers[0]?.id || '');
-  const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split('T')[0]);
-  const [invoiceDueDate, setInvoiceDueDate] = useState(new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]);
+  const [invoiceDate, setInvoiceDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [invoiceDueDate, setInvoiceDueDate] = useState(() => new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]);
   const [invoiceNotes, setInvoiceNotes] = useState('');
   const [invoiceLines, setInvoiceLines] = useState<Array<{
     itemId: string;
@@ -182,7 +182,8 @@ export function SalesModule({ state, onViewInvoice, initialTab = 'invoices' }: S
   const handleOpenPayment = (inv: SalesInvoice) => {
     setPaymentInvoice(inv);
     setPaymentAmount(inv.balanceDue);
-    setPaymentRef(`WIRE-${Math.floor(Math.random() * 900000 + 100000)}`);
+    const numPart = inv.invoiceNumber ? inv.invoiceNumber.replace(/[^0-9]/g, '') : '1001';
+    setPaymentRef(`WIRE-${numPart}`);
   };
 
   const handleConfirmPayment = (e: React.FormEvent) => {

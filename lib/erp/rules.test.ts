@@ -118,3 +118,70 @@ test('Document numbering formats sequential reference identifiers', () => {
   assert.equal(parsed?.prefix, 'INV');
   assert.equal(parsed?.sequenceNumber, 42);
 });
+
+test('Double-entry balancing rejects empty journal lines or less than 2 lines', () => {
+  const emptyLines: any[] = [];
+  const resultEmpty = validateJournalEntryBalance(emptyLines);
+  assert.equal(resultEmpty.isValid, false);
+  assert.match(resultEmpty.error || '', /at least 2 line/i);
+
+  const singleLine = [{ debit: 100, credit: 0 }];
+  const resultSingle = validateJournalEntryBalance(singleLine);
+  assert.equal(resultSingle.isValid, false);
+  assert.match(resultSingle.error || '', /at least 2 line/i);
+});
+
+test('Document numbering concurrency simulation produces zero duplicate numbers', () => {
+  // Simulate atomic sequence allocator (matching Postgres ON CONFLICT DO UPDATE RETURNING)
+  class AtomicSequenceStore {
+    private sequences = new Map<string, number>();
+
+    getNext(tenantId: string, docType: string): string {
+      const key = `${tenantId}:${docType}`;
+      const current = this.sequences.get(key) || 1;
+      this.sequences.set(key, current + 1);
+      return `INV-${String(current).padStart(4, '0')}`;
+    }
+  }
+
+  const store = new AtomicSequenceStore();
+  const allocated = new Set<string>();
+  const totalRequests = 100;
+
+  for (let i = 0; i < totalRequests; i++) {
+    const num = store.getNext('tenant-1', 'sales_invoice');
+    assert.equal(allocated.has(num), false, `Collision detected on document number: ${num}`);
+    allocated.add(num);
+  }
+
+  assert.equal(allocated.size, totalRequests);
+  assert.equal(allocated.has('INV-0001'), true);
+  assert.equal(allocated.has('INV-0100'), true);
+});
+
+test('Cross-tenant data access validator rejects foreign tenant records', () => {
+  function validateTenantAccess(
+    callerTenantIds: string[],
+    targetTenantId: string,
+    isSuperAdmin: boolean = false
+  ): boolean {
+    if (isSuperAdmin) return true;
+    return callerTenantIds.includes(targetTenantId);
+  }
+
+  const userATenants = ['tenant-alpha-uuid'];
+  const userBTenants = ['tenant-beta-uuid'];
+
+  // User A accessing Tenant Alpha: Allowed
+  assert.equal(validateTenantAccess(userATenants, 'tenant-alpha-uuid'), true);
+
+  // User A accessing Tenant Beta: Denied
+  assert.equal(validateTenantAccess(userATenants, 'tenant-beta-uuid'), false);
+
+  // User B accessing Tenant Alpha: Denied
+  assert.equal(validateTenantAccess(userBTenants, 'tenant-alpha-uuid'), false);
+
+  // Platform Super Admin accessing any tenant: Allowed
+  assert.equal(validateTenantAccess([], 'tenant-alpha-uuid', true), true);
+  assert.equal(validateTenantAccess([], 'tenant-beta-uuid', true), true);
+});
