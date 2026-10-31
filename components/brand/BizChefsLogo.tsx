@@ -14,32 +14,28 @@ interface BizChefsLogoProps {
 const sizeMap = {
   sm: {
     iconSize: 28,
-    fullWidth: 120,
-    fullHeight: 32,
+    fullSize: 34,
     text: 'text-sm font-semibold tracking-tight',
     badge: 'text-[9px] px-1.5 py-0.5',
     sub: 'text-[10px]'
   },
   md: {
     iconSize: 34,
-    fullWidth: 140,
-    fullHeight: 38,
+    fullSize: 42,
     text: 'text-base font-semibold tracking-tight',
     badge: 'text-[10px] px-1.5 py-0.5',
     sub: 'text-[11px]'
   },
   lg: {
     iconSize: 42,
-    fullWidth: 170,
-    fullHeight: 46,
+    fullSize: 52,
     text: 'text-lg font-bold tracking-tight',
     badge: 'text-[11px] px-2 py-0.5',
     sub: 'text-xs'
   },
   xl: {
     iconSize: 52,
-    fullWidth: 200,
-    fullHeight: 54,
+    fullSize: 68,
     text: 'text-xl font-bold tracking-tight',
     badge: 'text-xs px-2 py-0.5',
     sub: 'text-xs'
@@ -63,7 +59,7 @@ export function BizChefsLogo({
         style={{ width: s.iconSize, height: s.iconSize }}
       >
         <Image
-          src="/BizChefs-emblem-dark.png"
+          src="/BizChefs-emblem-transparent.png"
           alt="BizChefs Emblem"
           width={s.iconSize - 6}
           height={s.iconSize - 6}
@@ -75,28 +71,41 @@ export function BizChefsLogo({
     );
   }
 
-  // Authentic Full Logo
+  // Official Full Logo (Using newly provided official BizChefs logo file)
   if (variant === 'full') {
     return (
       <div className={`inline-flex items-center gap-2.5 ${className}`}>
-        <Image
-          src="/BizChefs-logo.png"
-          alt="BizChefs"
-          width={s.fullWidth}
-          height={s.fullHeight}
-          className="object-contain"
-          priority
-          unoptimized
-        />
-        <span
-          className={`font-mono font-bold tracking-wider uppercase rounded border ${s.badge} ${
-            theme === 'dark'
-              ? 'bg-[#18191e] text-[#e5a83b] border-[#d39e36]/40'
-              : 'bg-amber-50 text-amber-900 border-amber-300'
-          }`}
+        <div
+          className="relative shrink-0 flex items-center justify-center rounded-lg bg-white p-0.5 border border-neutral-200 shadow-xs overflow-hidden"
+          style={{ width: s.fullSize, height: s.fullSize }}
         >
-          ERP
-        </span>
+          <Image
+            src="/BizChefs-logo.png"
+            alt="BizChefs Official Logo"
+            width={s.fullSize}
+            height={s.fullSize}
+            className="object-contain"
+            priority
+            unoptimized
+          />
+        </div>
+        <div className="flex flex-col text-left">
+          <div className="flex items-center gap-1.5 leading-none">
+            <span className={`font-bold tracking-tight ${s.text} text-neutral-950`}>
+              Biz<span className="text-[#d39e36]">Chefs</span>
+            </span>
+            <span
+              className={`font-mono font-bold tracking-wider uppercase rounded border ${s.badge} bg-amber-50 text-amber-900 border-amber-300`}
+            >
+              ERP
+            </span>
+          </div>
+          {showSubtitle && (
+            <span className={`tracking-tight mt-1 font-normal ${s.sub} text-neutral-500`}>
+              Commercial Operations System
+            </span>
+          )}
+        </div>
       </div>
     );
   }
@@ -109,7 +118,7 @@ export function BizChefsLogo({
         style={{ width: s.iconSize, height: s.iconSize }}
       >
         <Image
-          src="/BizChefs-emblem-dark.png"
+          src="/BizChefs-emblem-transparent.png"
           alt="BizChefs Emblem"
           width={s.iconSize - 6}
           height={s.iconSize - 6}
