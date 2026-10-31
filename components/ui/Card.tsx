@@ -10,10 +10,10 @@ export function Card({
 }: React.HTMLAttributes<HTMLDivElement> & { goldAccent?: boolean }) {
   return (
     <div
-      className={`rounded-xl bg-[#13171f] border text-[#f3f4f6] transition-colors ${
+      className={`rounded-xl bg-white border text-neutral-900 shadow-xs transition-colors ${
         goldAccent
-          ? 'border-[#d39e36]/40 hover:border-[#d39e36]'
-          : 'border-[#262626] hover:border-zinc-700'
+          ? 'border-[#d39e36] ring-1 ring-[#d39e36]/30'
+          : 'border-neutral-200 hover:border-neutral-300'
       } ${className}`}
       {...props}
     >
@@ -41,7 +41,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={`text-base font-semibold tracking-tight text-[#f3f4f6] ${className}`}
+      className={`text-base font-semibold tracking-tight text-neutral-950 ${className}`}
       {...props}
     >
       {children}
@@ -55,7 +55,7 @@ export function CardDescription({
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={`text-xs text-zinc-400 leading-relaxed ${className}`} {...props}>
+    <p className={`text-xs text-neutral-600 leading-relaxed ${className}`} {...props}>
       {children}
     </p>
   );
@@ -80,7 +80,7 @@ export function CardFooter({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={`p-6 pt-0 flex items-center border-t border-[#262626] mt-4 pt-4 ${className}`}
+      className={`p-6 pt-0 flex items-center border-t border-neutral-100 mt-4 pt-4 ${className}`}
       {...props}
     >
       {children}

@@ -254,14 +254,14 @@ export default function ERPPage() {
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="fixed inset-0 z-40 md:hidden flex">
-            <div className="fixed inset-0 bg-black/60" onClick={() => setMobileMenuOpen(false)} />
-            <div className="relative w-64 bg-[#18191e] h-full shadow-xl z-50 flex flex-col">
-              <div className="p-4 flex items-center justify-between border-b border-zinc-800 text-white">
+            <div className="fixed inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
+            <div className="relative w-64 bg-white h-full shadow-xl z-50 flex flex-col">
+              <div className="p-4 flex items-center justify-between border-b border-neutral-200 text-neutral-900">
                 <span className="font-bold text-sm">BizChefs Menu</span>
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-1 text-zinc-400 hover:text-white"
+                  className="p-1 text-neutral-400 hover:text-neutral-950"
                 >
                   <X className="w-5 h-5" />
                 </button>

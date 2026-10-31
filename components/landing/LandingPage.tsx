@@ -50,7 +50,7 @@ export function LandingPage({
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0e12] text-[#f3f4f6] flex flex-col selection:bg-[#d39e36] selection:text-black">
+    <div className="min-h-screen bg-[#fafafa] text-neutral-900 flex flex-col selection:bg-[#d39e36] selection:text-black">
       <LandingHeader
         onEnterWorkspace={onEnterWorkspace}
         onOpenAuth={(mode) => onOpenAuth(mode, 'growth')}

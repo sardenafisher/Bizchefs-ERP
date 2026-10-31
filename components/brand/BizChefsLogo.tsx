@@ -51,7 +51,7 @@ export function BizChefsLogo({
   size = 'md',
   showSubtitle = true,
   className = '',
-  theme = 'dark'
+  theme = 'light'
 }: BizChefsLogoProps) {
   const s = sizeMap[size];
 
@@ -59,14 +59,14 @@ export function BizChefsLogo({
   if (variant === 'mark') {
     return (
       <div
-        className={`relative inline-flex items-center justify-center shrink-0 ${className}`}
+        className={`relative inline-flex items-center justify-center shrink-0 rounded-lg bg-white p-1 border border-neutral-200 shadow-xs ${className}`}
         style={{ width: s.iconSize, height: s.iconSize }}
       >
         <Image
-          src="/BizChefs-emblem-transparent.png"
+          src="/BizChefs-emblem-dark.png"
           alt="BizChefs Emblem"
-          width={s.iconSize}
-          height={s.iconSize}
+          width={s.iconSize - 6}
+          height={s.iconSize - 6}
           className="object-contain"
           priority
           unoptimized
@@ -84,7 +84,7 @@ export function BizChefsLogo({
           alt="BizChefs"
           width={s.fullWidth}
           height={s.fullHeight}
-          className={`object-contain ${theme === 'dark' ? 'brightness-100' : 'brightness-95'}`}
+          className="object-contain"
           priority
           unoptimized
         />
@@ -101,18 +101,18 @@ export function BizChefsLogo({
     );
   }
 
-  // Authentic Horizontal Lockup (Official Emblem + Typography + ERP Badge)
+  // Authentic Horizontal Lockup (Emblem + Typography + ERP Badge)
   return (
     <div className={`inline-flex items-center gap-3 ${className}`}>
       <div
-        className="relative shrink-0 flex items-center justify-center"
+        className="relative shrink-0 flex items-center justify-center rounded-lg bg-white p-1 border border-neutral-200 shadow-xs"
         style={{ width: s.iconSize, height: s.iconSize }}
       >
         <Image
-          src="/BizChefs-emblem-transparent.png"
+          src="/BizChefs-emblem-dark.png"
           alt="BizChefs Emblem"
-          width={s.iconSize}
-          height={s.iconSize}
+          width={s.iconSize - 6}
+          height={s.iconSize - 6}
           className="object-contain"
           priority
           unoptimized
@@ -123,7 +123,7 @@ export function BizChefsLogo({
         <div className="flex items-center gap-2 leading-none">
           <span
             className={`${s.text} ${
-              theme === 'dark' ? 'text-[#f3f4f6]' : 'text-[#171717]'
+              theme === 'dark' ? 'text-white' : 'text-neutral-950'
             }`}
           >
             Biz<span className="text-[#d39e36]">Chefs</span>
@@ -141,7 +141,7 @@ export function BizChefsLogo({
         {showSubtitle && (
           <span
             className={`tracking-tight mt-1 font-normal ${s.sub} ${
-              theme === 'dark' ? 'text-zinc-400' : 'text-zinc-500'
+              theme === 'dark' ? 'text-zinc-400' : 'text-neutral-500'
             }`}
           >
             Commercial Operations System

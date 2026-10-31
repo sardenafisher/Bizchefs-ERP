@@ -59,38 +59,38 @@ export function BenefitsSection() {
   ];
 
   return (
-    <section id="features" className="py-24 bg-[#090a0d] text-[#f3f4f6] border-b border-[#262626]">
+    <section id="features" className="py-24 bg-white text-neutral-900 border-b border-neutral-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <Badge variant="gold" size="md">
             Commercial Infrastructure
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-neutral-950">
             Built for Commercial Foodservice Demands
           </h2>
-          <p className="text-sm sm:text-base text-zinc-400">
+          <p className="text-sm sm:text-base text-neutral-600">
             Engineered to replace fragile spreadsheets and disconnected software with a dependable, multi-tenant enterprise system.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((b, i) => (
-            <Card key={i} className="hover:border-zinc-700 transition-colors">
+            <Card key={i} className="hover:border-neutral-300 transition-colors shadow-2xs">
               <CardHeader className="space-y-3">
-                <div className="w-10 h-10 rounded-lg bg-[#0c0e12] border border-[#262626] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-neutral-50 border border-neutral-200 flex items-center justify-center">
                   {b.icon}
                 </div>
                 <div>
-                  <CardTitle className="text-base text-white">
+                  <CardTitle className="text-base text-neutral-950 font-semibold">
                     {b.title}
                   </CardTitle>
-                  <p className="text-xs text-[#d39e36] font-medium mt-0.5">
+                  <p className="text-xs text-[#b88022] font-medium mt-0.5">
                     {b.tagline}
                   </p>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-neutral-600 leading-relaxed">
                   {b.description}
                 </p>
               </CardContent>

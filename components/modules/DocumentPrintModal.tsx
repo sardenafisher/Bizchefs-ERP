@@ -21,10 +21,10 @@ export function DocumentPrintModal({ invoice, tenant, onClose }: DocumentPrintMo
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm overflow-y-auto">
       <div className="bg-white text-zinc-900 rounded-xl shadow-2xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden">
         {/* Header Actions */}
-        <div className="no-print bg-zinc-900 text-white px-6 py-3 flex items-center justify-between border-b border-zinc-800">
+        <div className="no-print bg-neutral-50 text-neutral-900 px-6 py-3 flex items-center justify-between border-b border-neutral-200">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-sm">Commercial Invoice Preview</span>
-            <span className="text-xs bg-[#d39e36] text-black font-mono font-bold px-2 py-0.5 rounded">
+            <span className="text-xs bg-amber-50 text-amber-900 border border-amber-300 font-mono font-bold px-2 py-0.5 rounded">
               {invoice.invoiceNumber}
             </span>
           </div>
@@ -32,16 +32,16 @@ export function DocumentPrintModal({ invoice, tenant, onClose }: DocumentPrintMo
             <button
               type="button"
               onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#d39e36] hover:bg-[#be8a29] text-black font-semibold text-xs rounded transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-950 hover:bg-neutral-800 text-white font-medium text-xs rounded-lg transition-colors cursor-pointer shadow-xs"
             >
-              <Printer className="w-3.5 h-3.5" />
+              <Printer className="w-3.5 h-3.5 text-[#d39e36]" />
               <span>Print / Save PDF</span>
             </button>
             <button
               type="button"
               onClick={onClose}
               aria-label="Close invoice preview"
-              className="p-1.5 text-zinc-400 hover:text-white rounded transition-colors cursor-pointer"
+              className="p-1.5 text-neutral-400 hover:text-neutral-900 rounded transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>

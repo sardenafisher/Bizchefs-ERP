@@ -15,8 +15,7 @@ import {
   Briefcase,
   Settings,
   ShieldCheck,
-  ArrowRight,
-  Check
+  ArrowRight
 } from 'lucide-react';
 
 interface ModulesSectionProps {
@@ -40,17 +39,17 @@ export function ModulesSection({ onEnterWorkspace }: ModulesSectionProps) {
   };
 
   return (
-    <section id="modules" className="py-24 bg-[#0c0e12] text-[#f3f4f6] border-b border-[#262626]">
+    <section id="modules" className="py-24 bg-[#fafafa] text-neutral-900 border-b border-neutral-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <Badge variant="gold" size="md">
             Verified Enterprise Functionality
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-neutral-950">
             Nine Integrated Operational Modules
           </h2>
-          <p className="text-sm sm:text-base text-zinc-400">
+          <p className="text-sm sm:text-base text-neutral-600">
             Engineered specifically for commercial foodservice, catering, and multi-branch operations.
             Every module operates under tenant row-level security and atomic database transactions.
           </p>
@@ -61,34 +60,34 @@ export function ModulesSection({ onEnterWorkspace }: ModulesSectionProps) {
           {ERP_MODULE_DEFINITIONS.map((mod) => (
             <Card
               key={mod.id}
-              className="flex flex-col justify-between hover:border-zinc-700 transition-colors"
+              className="flex flex-col justify-between hover:border-neutral-300 transition-colors shadow-2xs bg-white"
             >
               <CardHeader className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-lg bg-[#0c0e12] border border-[#262626] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-neutral-50 border border-neutral-200 flex items-center justify-center">
                     {getIcon(mod.iconName)}
                   </div>
-                  <span className="text-[10px] text-zinc-400 uppercase font-mono tracking-wider">
+                  <span className="text-[10px] text-neutral-500 uppercase font-mono tracking-wider">
                     Verified
                   </span>
                 </div>
                 <div>
-                  <CardTitle className="text-base text-white">
+                  <CardTitle className="text-base text-neutral-950">
                     {mod.name}
                   </CardTitle>
-                  <p className="text-xs text-[#d39e36] font-medium mt-1">
+                  <p className="text-xs text-[#b88022] font-medium mt-1">
                     {mod.tagline}
                   </p>
                 </div>
               </CardHeader>
 
               <CardContent className="space-y-3">
-                <CardDescription className="text-xs leading-relaxed text-zinc-400">
+                <CardDescription className="text-xs leading-relaxed text-neutral-600">
                   {mod.description}
                 </CardDescription>
               </CardContent>
 
-              <CardFooter className="pt-3 border-t border-[#262626]">
+              <CardFooter className="pt-3 border-t border-neutral-100">
                 <Button
                   variant="secondary"
                   size="sm"

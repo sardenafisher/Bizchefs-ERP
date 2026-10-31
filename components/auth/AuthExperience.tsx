@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useId } from 'react';
+import React, { useState, useId } from 'react';
 import { 
   Lock, 
   Mail, 
@@ -12,17 +12,15 @@ import {
   Eye, 
   EyeOff, 
   Shield, 
-  Globe, 
   ExternalLink, 
   Check, 
   RotateCw,
   Sparkles,
-  Layers,
   ChevronRight,
   X
 } from 'lucide-react';
 import { authService } from '@/lib/services/auth-service';
-import { getSupabaseCredentials, getSupabaseClient } from '@/lib/supabase/client';
+import { getSupabaseCredentials } from '@/lib/supabase/client';
 import { supabaseERP } from '@/lib/services/supabase-erp-service';
 import { BizChefsLogo } from '@/components/brand/BizChefsLogo';
 import { Tenant } from '@/lib/types/erp';
@@ -99,7 +97,7 @@ export function AuthExperience({
   const [companyName, setCompanyName] = useState('');
   const [companySlug, setCompanySlug] = useState('');
   const [currency, setCurrency] = useState('USD');
-  const [timezone, setTimezone] = useState('UTC');
+  const [timezone] = useState('UTC');
   const [taxNumber, setTaxNumber] = useState('');
   const [industry, setIndustry] = useState('Hospitality & Foodservice');
 
@@ -165,7 +163,6 @@ export function AuthExperience({
         }
 
         if (session || user) {
-          // Check if user has tenants
           try {
             const tenants = await supabaseERP.getUserTenants();
             if (!tenants || tenants.length === 0) {
@@ -187,7 +184,6 @@ export function AuthExperience({
               }, 600);
             }
           } catch {
-            // Fallback to default tenant if remote query encounters network issue
             onAuthSuccess();
           }
         }
@@ -215,14 +211,12 @@ export function AuthExperience({
         }
 
         if (session) {
-          // Auto-confirmed session: direct to organization onboarding
           setMode('onboarding');
           setMessage({
             type: 'success',
             text: 'Account created and verified! Now configure your company workspace.'
           });
         } else if (user) {
-          // Confirmation email dispatched
           setVerificationSent(true);
         }
       }
@@ -236,7 +230,6 @@ export function AuthExperience({
         const { error } = await authService.resetPassword(email.trim());
         if (error) throw error;
 
-        // Never reveal whether the account exists
         setResetSent(true);
       }
 
@@ -287,14 +280,14 @@ export function AuthExperience({
 
   return (
     <div className={`w-full ${isModal ? 'max-w-xl mx-auto' : 'min-h-[85vh] flex items-center justify-center p-4'}`}>
-      <div className="w-full bg-[#13171f] border border-[#262626] rounded-xl shadow-2xl overflow-hidden flex flex-col text-[#f3f4f6]">
+      <div className="w-full bg-white border border-neutral-200 rounded-xl shadow-xl overflow-hidden flex flex-col text-neutral-900">
         
         {/* Top Branding Banner */}
-        <div className="px-6 py-4 bg-[#0c0e12] border-b border-[#262626] flex items-center justify-between">
-          <BizChefsLogo size="md" variant="horizontal" showSubtitle={true} theme="dark" />
+        <div className="px-6 py-4 bg-neutral-50/90 border-b border-neutral-200 flex items-center justify-between">
+          <BizChefsLogo size="md" variant="horizontal" showSubtitle={false} theme="light" />
           
           <div className="flex items-center gap-2">
-            <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-zinc-400 bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-full">
+            <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-neutral-600 bg-white border border-neutral-200 px-2.5 py-1 rounded-full shadow-2xs">
               <Shield className="w-3 h-3 text-[#d39e36]" />
               <span>Supabase Auth</span>
             </div>
@@ -302,7 +295,7 @@ export function AuthExperience({
               <button
                 type="button"
                 onClick={onCancel}
-                className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="p-1.5 text-neutral-400 hover:text-neutral-950 rounded-lg hover:bg-neutral-100 transition-colors cursor-pointer"
                 aria-label="Close"
               >
                 <X className="w-4 h-4" />
@@ -312,30 +305,30 @@ export function AuthExperience({
         </div>
 
         {/* Ecosystem Sub-Navigation Bar */}
-        <div className="px-6 py-2.5 bg-zinc-900/60 border-b border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-400">
+        <div className="px-6 py-2.5 bg-neutral-50/50 border-b border-neutral-200 flex items-center justify-between text-[11px] text-neutral-600">
           <div className="flex items-center gap-3">
-            <span className="text-zinc-500 font-semibold uppercase tracking-wider text-[10px]">Ecosystem:</span>
+            <span className="text-neutral-500 font-semibold uppercase tracking-wider text-[10px]">Ecosystem:</span>
             <a 
               href="https://bizchefs.com" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="hover:text-[#d39e36] transition-colors flex items-center gap-1"
+              className="hover:text-neutral-950 transition-colors flex items-center gap-1"
             >
               <span>bizchefs.com</span>
               <ExternalLink className="w-2.5 h-2.5 opacity-60" />
             </a>
-            <span className="text-zinc-700">•</span>
+            <span className="text-neutral-300">•</span>
             <a 
               href="https://studio.bizchefs.com" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="hover:text-[#d39e36] transition-colors flex items-center gap-1"
+              className="hover:text-neutral-950 transition-colors flex items-center gap-1"
             >
               <span>studio.bizchefs.com</span>
               <ExternalLink className="w-2.5 h-2.5 opacity-60" />
             </a>
           </div>
-          <span className="text-emerald-400 font-mono text-[10px] hidden sm:inline">
+          <span className="text-emerald-700 font-mono text-[10px] hidden sm:inline font-medium">
             Hostinger LiteSpeed Verified
           </span>
         </div>
@@ -348,31 +341,31 @@ export function AuthExperience({
             <div
               className={`p-3.5 rounded-xl text-xs flex items-start gap-2.5 border animate-in fade-in ${
                 message.type === 'error'
-                  ? 'bg-red-950/40 border-red-800/60 text-red-200'
+                  ? 'bg-rose-50 border-rose-200 text-rose-800'
                   : message.type === 'success'
-                  ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-200'
-                  : 'bg-blue-950/40 border-blue-800/60 text-blue-200'
+                  ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                  : 'bg-blue-50 border-blue-200 text-blue-800'
               }`}
             >
               {message.type === 'error' ? (
-                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
               ) : (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               )}
-              <span className="leading-relaxed">{message.text}</span>
+              <span className="leading-relaxed font-medium">{message.text}</span>
             </div>
           )}
 
           {/* VIEW: EMAIL VERIFICATION SENT */}
           {verificationSent ? (
             <div className="py-6 text-center space-y-4">
-              <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto text-emerald-400">
+              <div className="w-14 h-14 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-center mx-auto text-emerald-600">
                 <Mail className="w-7 h-7" />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-zinc-100">Verification Email Dispatched</h3>
-                <p className="text-xs text-zinc-400 mt-1 max-w-sm mx-auto leading-relaxed">
-                  We have sent an activation link to <span className="font-semibold text-zinc-200">{email}</span>. Please click the link in your email to verify your address and complete your workspace setup.
+                <h3 className="text-base font-semibold text-neutral-950">Verification Email Dispatched</h3>
+                <p className="text-xs text-neutral-600 mt-1 max-w-sm mx-auto leading-relaxed">
+                  We have sent an activation link to <span className="font-semibold text-neutral-900">{email}</span>. Please click the link in your email to verify your address and complete your workspace setup.
                 </p>
               </div>
               <div className="pt-2">
@@ -382,7 +375,7 @@ export function AuthExperience({
                     setVerificationSent(false);
                     setMode('signin');
                   }}
-                  className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium rounded-lg transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-xs font-medium rounded-lg transition-colors cursor-pointer"
                 >
                   Return to Sign In
                 </button>
@@ -391,13 +384,13 @@ export function AuthExperience({
           ) : resetSent ? (
             /* VIEW: PASSWORD RESET EMAIL SENT */
             <div className="py-6 text-center space-y-4">
-              <div className="w-14 h-14 bg-[#d39e36]/10 border border-[#d39e36]/30 rounded-2xl flex items-center justify-center mx-auto text-[#d39e36]">
+              <div className="w-14 h-14 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-center mx-auto text-[#d39e36]">
                 <Mail className="w-7 h-7" />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-zinc-100">Recovery Instructions Sent</h3>
-                <p className="text-xs text-zinc-400 mt-1 max-w-sm mx-auto leading-relaxed">
-                  If an account exists for <span className="font-semibold text-zinc-200">{email}</span>, you will receive a secure password reset link. Please check your inbox and junk folder.
+                <h3 className="text-base font-semibold text-neutral-950">Recovery Instructions Sent</h3>
+                <p className="text-xs text-neutral-600 mt-1 max-w-sm mx-auto leading-relaxed">
+                  If an account exists for <span className="font-semibold text-neutral-900">{email}</span>, you will receive a secure password reset link. Please check your inbox and junk folder.
                 </p>
               </div>
               <div className="pt-2">
@@ -407,7 +400,7 @@ export function AuthExperience({
                     setResetSent(false);
                     setMode('signin');
                   }}
-                  className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium rounded-lg transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 text-xs font-medium rounded-lg transition-colors cursor-pointer"
                 >
                   Return to Sign In
                 </button>
@@ -416,12 +409,12 @@ export function AuthExperience({
           ) : passwordUpdated ? (
             /* VIEW: PASSWORD UPDATED CONFIRMATION */
             <div className="py-6 text-center space-y-4">
-              <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto text-emerald-400">
+              <div className="w-14 h-14 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-center mx-auto text-emerald-600">
                 <CheckCircle2 className="w-7 h-7" />
               </div>
               <div>
-                <h3 className="text-base font-semibold text-zinc-100">Password Updated Successfully</h3>
-                <p className="text-xs text-zinc-400 mt-1 max-w-sm mx-auto leading-relaxed">
+                <h3 className="text-base font-semibold text-neutral-950">Password Updated Successfully</h3>
+                <p className="text-xs text-neutral-600 mt-1 max-w-sm mx-auto leading-relaxed">
                   Your credentials have been updated in Supabase. You can now access your commercial enterprise workspaces.
                 </p>
               </div>
@@ -432,7 +425,7 @@ export function AuthExperience({
                     setPasswordUpdated(false);
                     setMode('signin');
                   }}
-                  className="px-5 py-2.5 bg-[#d39e36] hover:bg-[#be8a29] text-black text-xs font-semibold rounded-lg transition-colors cursor-pointer shadow-sm"
+                  className="px-5 py-2.5 bg-neutral-950 hover:bg-neutral-800 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer shadow-xs"
                 >
                   Continue to Sign In
                 </button>
@@ -442,8 +435,8 @@ export function AuthExperience({
             /* VIEW: TENANT / WORKSPACE SELECTION */
             <div className="space-y-4">
               <div>
-                <h3 className="text-sm font-semibold text-zinc-100">Select Enterprise Workspace</h3>
-                <p className="text-xs text-zinc-400 mt-0.5">
+                <h3 className="text-sm font-semibold text-neutral-950">Select Enterprise Workspace</h3>
+                <p className="text-xs text-neutral-500 mt-0.5">
                   Your authenticated identity has access to multiple tenant organizations:
                 </p>
               </div>
@@ -454,36 +447,36 @@ export function AuthExperience({
                     key={t.id}
                     type="button"
                     onClick={() => onAuthSuccess(t.id)}
-                    className="w-full flex items-center justify-between p-3.5 bg-zinc-900 hover:bg-zinc-800/80 border border-zinc-800 hover:border-[#d39e36]/60 rounded-xl transition-all cursor-pointer group text-left"
+                    className="w-full flex items-center justify-between p-3.5 bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 hover:border-neutral-300 rounded-xl transition-all cursor-pointer group text-left shadow-2xs"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-[#d39e36]">
+                      <div className="w-8 h-8 rounded-lg bg-white border border-neutral-200 flex items-center justify-center text-[#d39e36]">
                         <Building2 className="w-4 h-4" />
                       </div>
                       <div>
-                        <div className="text-xs font-semibold text-zinc-200 group-hover:text-white">{t.name}</div>
-                        <div className="text-[10px] text-zinc-400 font-mono">
+                        <div className="text-xs font-semibold text-neutral-900 group-hover:text-neutral-950">{t.name}</div>
+                        <div className="text-[10px] text-neutral-500 font-mono">
                           {t.settings.baseCurrency} • {t.industry}
                         </div>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-[#d39e36] transition-colors" />
+                    <ChevronRight className="w-4 h-4 text-neutral-400 group-hover:text-neutral-900 transition-colors" />
                   </button>
                 ))}
               </div>
 
-              <div className="pt-2 border-t border-zinc-800 flex items-center justify-between text-xs">
+              <div className="pt-2 border-t border-neutral-200 flex items-center justify-between text-xs">
                 <button
                   type="button"
                   onClick={() => setMode('onboarding')}
-                  className="text-[#d39e36] hover:underline font-medium cursor-pointer"
+                  className="text-[#b88022] hover:text-[#d39e36] font-medium cursor-pointer"
                 >
                   + Register New Organization
                 </button>
                 <button
                   type="button"
                   onClick={() => setMode('signin')}
-                  className="text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                  className="text-neutral-500 hover:text-neutral-900 cursor-pointer"
                 >
                   Switch User
                 </button>
@@ -493,18 +486,18 @@ export function AuthExperience({
             /* VIEW: TENANT ONBOARDING */
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div>
-                <h3 className="text-sm font-semibold text-zinc-100 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-neutral-950 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#d39e36]" />
                   <span>Register Company Workspace</span>
                 </h3>
-                <p className="text-zinc-400 mt-1 leading-relaxed">
-                  As the workspace creator, you will be assigned as <span className="text-zinc-200 font-semibold">Tenant Owner</span>. This provisions an isolated database schema with standard Chart of Accounts, warehouses, and sequence counters.
+                <p className="text-neutral-600 mt-1 leading-relaxed">
+                  As the workspace creator, you will be assigned as <span className="text-neutral-950 font-semibold">Tenant Owner</span>. This provisions an isolated database schema with standard Chart of Accounts, warehouses, and sequence counters.
                 </p>
               </div>
 
               <div className="space-y-3 pt-2">
                 <div>
-                  <label htmlFor={`${formId}-companyName`} className="block font-medium text-zinc-300 mb-1">Company / Organization Name *</label>
+                  <label htmlFor={`${formId}-companyName`} className="block font-medium text-neutral-700 mb-1">Company / Organization Name *</label>
                   <input
                     id={`${formId}-companyName`}
                     type="text"
@@ -512,13 +505,13 @@ export function AuthExperience({
                     value={companyName}
                     onChange={(e) => handleCompanyNameChange(e.target.value)}
                     placeholder="e.g. Diamond Hospitality Group"
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-100 placeholder:text-zinc-600 focus:outline-hidden focus:border-[#d39e36]"
+                    className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-hidden focus:border-[#d39e36]"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor={`${formId}-companySlug`} className="block font-medium text-zinc-300 mb-1">Workspace Identifier (Slug) *</label>
+                    <label htmlFor={`${formId}-companySlug`} className="block font-medium text-neutral-700 mb-1">Workspace Identifier (Slug) *</label>
                     <input
                       id={`${formId}-companySlug`}
                       type="text"
@@ -526,16 +519,16 @@ export function AuthExperience({
                       value={companySlug}
                       onChange={(e) => setCompanySlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                       placeholder="e.g. diamond-hospitality"
-                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-100 font-mono text-xs focus:outline-hidden focus:border-[#d39e36]"
+                      className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 font-mono text-xs focus:outline-hidden focus:border-[#d39e36]"
                     />
                   </div>
                   <div>
-                    <label htmlFor={`${formId}-currency`} className="block font-medium text-zinc-300 mb-1">Base Currency *</label>
+                    <label htmlFor={`${formId}-currency`} className="block font-medium text-neutral-700 mb-1">Base Currency *</label>
                     <select
                       id={`${formId}-currency`}
                       value={currency}
                       onChange={(e) => setCurrency(e.target.value)}
-                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-100 focus:outline-hidden focus:border-[#d39e36]"
+                      className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 focus:outline-hidden focus:border-[#d39e36]"
                     >
                       <option value="USD">USD — US Dollar ($)</option>
                       <option value="EUR">EUR — Euro (€)</option>
@@ -550,12 +543,12 @@ export function AuthExperience({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor={`${formId}-industry`} className="block font-medium text-zinc-300 mb-1">Industry Sector</label>
+                    <label htmlFor={`${formId}-industry`} className="block font-medium text-neutral-700 mb-1">Industry Sector</label>
                     <select
                       id={`${formId}-industry`}
                       value={industry}
                       onChange={(e) => setIndustry(e.target.value)}
-                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-100 focus:outline-hidden focus:border-[#d39e36]"
+                      className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 focus:outline-hidden focus:border-[#d39e36]"
                     >
                       <option value="Hospitality & Foodservice">Hospitality & Foodservice</option>
                       <option value="Software & Digital Agency">Software & Digital Agency</option>
@@ -565,21 +558,21 @@ export function AuthExperience({
                     </select>
                   </div>
                   <div>
-                    <label htmlFor={`${formId}-taxNumber`} className="block font-medium text-zinc-300 mb-1">VAT / Tax ID (Optional)</label>
+                    <label htmlFor={`${formId}-taxNumber`} className="block font-medium text-neutral-700 mb-1">VAT / Tax ID (Optional)</label>
                     <input
                       id={`${formId}-taxNumber`}
                       type="text"
                       value={taxNumber}
                       onChange={(e) => setTaxNumber(e.target.value)}
                       placeholder="e.g. US-849204910"
-                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-100 placeholder:text-zinc-600 focus:outline-hidden focus:border-[#d39e36]"
+                      className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-hidden focus:border-[#d39e36]"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="p-3 bg-zinc-900/80 border border-zinc-800 rounded-xl space-y-1.5 text-[11px] text-zinc-400">
-                <div className="font-semibold text-zinc-300 flex items-center gap-1.5">
+              <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl space-y-1.5 text-[11px] text-neutral-600">
+                <div className="font-semibold text-neutral-900 flex items-center gap-1.5">
                   <Shield className="w-3.5 h-3.5 text-[#d39e36]" />
                   <span>Automatic Security Provisioning</span>
                 </div>
@@ -591,7 +584,7 @@ export function AuthExperience({
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 bg-[#d39e36] hover:bg-[#be8a29] text-black font-semibold rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
+                className="w-full py-2.5 bg-neutral-950 hover:bg-neutral-800 text-white font-semibold rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xs disabled:opacity-50"
               >
                 {loading ? (
                   <>
@@ -612,13 +605,13 @@ export function AuthExperience({
               
               {/* Header Title & Subtitle */}
               <div className="space-y-1">
-                <h3 className="text-base font-semibold text-zinc-100">
+                <h3 className="text-base font-semibold text-neutral-950">
                   {mode === 'signin' && 'Sign in to your ERP Workspace'}
                   {mode === 'signup' && 'Register Commercial Account'}
                   {mode === 'forgot-password' && 'Reset your password'}
                   {mode === 'reset-password' && 'Enter your new password'}
                 </h3>
-                <p className="text-zinc-400 text-xs">
+                <p className="text-neutral-500 text-xs">
                   {mode === 'signin' && 'Enter your work credentials to access your multi-tenant portal.'}
                   {mode === 'signup' && 'Create your BizChefs identity with enterprise credentials.'}
                   {mode === 'forgot-password' && 'Enter your registered work email to receive a secure recovery link.'}
@@ -628,7 +621,7 @@ export function AuthExperience({
 
               {/* Mode Switcher Tabs (Sign In / Register) */}
               {(mode === 'signin' || mode === 'signup') && (
-                <div className="flex border-b border-[#262626] text-xs">
+                <div className="flex border-b border-neutral-200 text-xs">
                   <button
                     type="button"
                     onClick={() => {
@@ -637,8 +630,8 @@ export function AuthExperience({
                     }}
                     className={`pb-2.5 px-3 font-semibold transition-colors cursor-pointer border-b-2 ${
                       mode === 'signin'
-                        ? 'border-[#d39e36] text-[#d39e36]'
-                        : 'border-transparent text-zinc-400 hover:text-zinc-200'
+                        ? 'border-neutral-950 text-neutral-950'
+                        : 'border-transparent text-neutral-500 hover:text-neutral-900'
                     }`}
                   >
                     Sign In
@@ -651,8 +644,8 @@ export function AuthExperience({
                     }}
                     className={`pb-2.5 px-3 font-semibold transition-colors cursor-pointer border-b-2 ${
                       mode === 'signup'
-                        ? 'border-[#d39e36] text-[#d39e36]'
-                        : 'border-transparent text-zinc-400 hover:text-zinc-200'
+                        ? 'border-neutral-950 text-neutral-950'
+                        : 'border-transparent text-neutral-500 hover:text-neutral-900'
                     }`}
                   >
                     Register Organization
@@ -662,10 +655,10 @@ export function AuthExperience({
 
               {/* Selected Plan indicator in Sign Up */}
               {mode === 'signup' && (
-                <div className="p-3 bg-[#0c0e12] border border-[#262626] rounded-lg space-y-2">
+                <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-lg space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-zinc-400 font-medium">Subscription Tier:</span>
-                    <span className="text-[#d39e36] font-semibold uppercase">{selectedPlan} Plan</span>
+                    <span className="text-neutral-600 font-medium">Subscription Tier:</span>
+                    <span className="text-neutral-950 font-bold uppercase">{selectedPlan} Plan</span>
                   </div>
                   <div className="grid grid-cols-3 gap-1.5">
                     {(['starter', 'growth', 'enterprise'] as const).map(p => (
@@ -673,17 +666,17 @@ export function AuthExperience({
                         key={p}
                         type="button"
                         onClick={() => setSelectedPlan(p)}
-                        className={`py-1 px-1.5 rounded text-[11px] font-medium capitalize border transition-colors cursor-pointer ${
+                        className={`py-1.5 px-1.5 rounded text-[11px] font-semibold capitalize border transition-colors cursor-pointer ${
                           selectedPlan === p
-                            ? 'bg-[#d39e36]/15 border-[#d39e36] text-[#d39e36]'
-                            : 'bg-[#13171f] border-[#262626] text-zinc-400 hover:text-white'
+                            ? 'bg-white border-neutral-950 text-neutral-950 shadow-2xs'
+                            : 'bg-neutral-100 border-neutral-200 text-neutral-600 hover:text-neutral-900'
                         }`}
                       >
                         {p}
                       </button>
                     ))}
                   </div>
-                  <div className="text-[10px] text-zinc-500">
+                  <div className="text-[10px] text-neutral-500">
                     {selectedPlan === 'starter' && '1,950 EGP/mo • 5 Team Users • 1 Warehouse'}
                     {selectedPlan === 'growth' && '4,750 EGP/mo • 15 Team Users • 5 Warehouses (Recommended)'}
                     {selectedPlan === 'enterprise' && 'Custom Agreement • 50+ Users • Unlimited Warehouses'}
@@ -694,9 +687,9 @@ export function AuthExperience({
               {/* Full Name (Sign Up only) */}
               {mode === 'signup' && (
                 <div>
-                  <label htmlFor={`${formId}-fullName`} className="block font-medium text-zinc-300 mb-1">Full Name *</label>
+                  <label htmlFor={`${formId}-fullName`} className="block font-medium text-neutral-700 mb-1">Full Name *</label>
                   <div className="relative">
-                    <User className="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" />
+                    <User className="w-4 h-4 text-neutral-400 absolute left-3 top-2.5" />
                     <input
                       id={`${formId}-fullName`}
                       type="text"
@@ -704,7 +697,7 @@ export function AuthExperience({
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="e.g. Alex Morgan"
-                      className="w-full pl-9 pr-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-100 placeholder:text-zinc-600 focus:outline-hidden focus:border-[#d39e36]"
+                      className="w-full pl-9 pr-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-hidden focus:border-[#d39e36]"
                     />
                   </div>
                 </div>
@@ -713,9 +706,9 @@ export function AuthExperience({
               {/* Work Email (Sign In, Sign Up, Forgot Password) */}
               {mode !== 'reset-password' && (
                 <div>
-                  <label htmlFor={`${formId}-email`} className="block font-medium text-zinc-300 mb-1">Work Email Address *</label>
+                  <label htmlFor={`${formId}-email`} className="block font-medium text-neutral-700 mb-1">Work Email Address *</label>
                   <div className="relative">
-                    <Mail className="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" />
+                    <Mail className="w-4 h-4 text-neutral-400 absolute left-3 top-2.5" />
                     <input
                       id={`${formId}-email`}
                       type="email"
@@ -723,7 +716,7 @@ export function AuthExperience({
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="user@company.com"
-                      className="w-full pl-9 pr-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-100 placeholder:text-zinc-600 focus:outline-hidden focus:border-[#d39e36]"
+                      className="w-full pl-9 pr-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-hidden focus:border-[#d39e36]"
                     />
                   </div>
                 </div>
@@ -733,7 +726,7 @@ export function AuthExperience({
               {mode !== 'forgot-password' && (
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label htmlFor={`${formId}-password`} className="font-medium text-zinc-300">
+                    <label htmlFor={`${formId}-password`} className="font-medium text-neutral-700">
                       {mode === 'reset-password' ? 'New Password *' : 'Password *'}
                     </label>
                     {mode === 'signin' && (
@@ -743,14 +736,14 @@ export function AuthExperience({
                           setMode('forgot-password');
                           setMessage(null);
                         }}
-                        className="text-[11px] text-[#d39e36] hover:underline cursor-pointer"
+                        className="text-[11px] text-[#b88022] hover:underline cursor-pointer"
                       >
                         Forgot password?
                       </button>
                     )}
                   </div>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" />
+                    <Lock className="w-4 h-4 text-neutral-400 absolute left-3 top-2.5" />
                     <input
                       id={`${formId}-password`}
                       type={showPassword ? 'text' : 'password'}
@@ -758,12 +751,12 @@ export function AuthExperience({
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••••••"
-                      className="w-full pl-9 pr-10 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-100 placeholder:text-zinc-600 focus:outline-hidden focus:border-[#d39e36]"
+                      className="w-full pl-9 pr-10 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-hidden focus:border-[#d39e36]"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-2.5 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                      className="absolute right-3 top-2.5 text-neutral-400 hover:text-neutral-900 cursor-pointer"
                       aria-label="Toggle password visibility"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -773,15 +766,15 @@ export function AuthExperience({
                   {/* Password Strength Meter (Signup and Reset) */}
                   {(mode === 'signup' || mode === 'reset-password') && password.length > 0 && (
                     <div className="mt-2 space-y-1">
-                      <div className="flex items-center justify-between text-[10px] text-zinc-400">
+                      <div className="flex items-center justify-between text-[10px] text-neutral-500">
                         <span>Strength:</span>
                         <span
                           className={`font-semibold ${
                             passwordStrength <= 2
-                              ? 'text-red-400'
+                              ? 'text-rose-600'
                               : passwordStrength <= 3
-                              ? 'text-amber-400'
-                              : 'text-emerald-400'
+                              ? 'text-amber-600'
+                              : 'text-emerald-600'
                           }`}
                         >
                           {passwordStrength <= 2 && 'Weak (add numbers & symbols)'}
@@ -789,18 +782,18 @@ export function AuthExperience({
                           {passwordStrength >= 4 && 'Strong'}
                         </span>
                       </div>
-                      <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden flex gap-1">
+                      <div className="h-1.5 w-full bg-neutral-100 rounded-full overflow-hidden flex gap-1">
                         {[1, 2, 3, 4, 5].map((lvl) => (
                           <div
                             key={lvl}
                             className={`h-full flex-1 rounded-full transition-all ${
                               lvl <= passwordStrength
                                 ? passwordStrength <= 2
-                                  ? 'bg-red-500'
+                                  ? 'bg-rose-500'
                                   : passwordStrength <= 3
                                   ? 'bg-amber-500'
                                   : 'bg-emerald-500'
-                                : 'bg-zinc-800'
+                                : 'bg-neutral-200'
                             }`}
                           />
                         ))}
@@ -813,9 +806,9 @@ export function AuthExperience({
               {/* Confirm Password Field (Sign Up and Reset Password) */}
               {(mode === 'signup' || mode === 'reset-password') && (
                 <div>
-                  <label htmlFor={`${formId}-confirmPassword`} className="block font-medium text-zinc-300 mb-1">Confirm Password *</label>
+                  <label htmlFor={`${formId}-confirmPassword`} className="block font-medium text-neutral-700 mb-1">Confirm Password *</label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" />
+                    <Lock className="w-4 h-4 text-neutral-400 absolute left-3 top-2.5" />
                     <input
                       id={`${formId}-confirmPassword`}
                       type={showConfirmPassword ? 'text' : 'password'}
@@ -823,12 +816,12 @@ export function AuthExperience({
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••••••"
-                      className="w-full pl-9 pr-10 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-zinc-100 placeholder:text-zinc-600 focus:outline-hidden focus:border-[#d39e36]"
+                      className="w-full pl-9 pr-10 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-hidden focus:border-[#d39e36]"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-2.5 text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                      className="absolute right-3 top-2.5 text-neutral-400 hover:text-neutral-900 cursor-pointer"
                       aria-label="Toggle confirm password visibility"
                     >
                       {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -837,13 +830,13 @@ export function AuthExperience({
                   {confirmPassword.length > 0 && (
                     <div className="mt-1 text-[11px] flex items-center gap-1.5">
                       {password === confirmPassword ? (
-                        <span className="text-emerald-400 flex items-center gap-1">
-                          <Check className="w-3 h-3" />
+                        <span className="text-emerald-700 flex items-center gap-1 font-medium">
+                          <Check className="w-3 h-3 text-emerald-600" />
                           <span>Passwords match</span>
                         </span>
                       ) : (
-                        <span className="text-red-400 flex items-center gap-1">
-                          <AlertCircle className="w-3 h-3" />
+                        <span className="text-rose-700 flex items-center gap-1 font-medium">
+                          <AlertCircle className="w-3 h-3 text-rose-600" />
                           <span>Passwords do not match</span>
                         </span>
                       )}
@@ -854,13 +847,13 @@ export function AuthExperience({
 
               {/* Remember Me Checkbox (Sign In only) */}
               {mode === 'signin' && (
-                <div className="flex items-center justify-between text-xs text-zinc-400">
+                <div className="flex items-center justify-between text-xs text-neutral-600">
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="rounded border-zinc-700 bg-zinc-900 text-[#d39e36] focus:ring-[#d39e36]"
+                      className="rounded border-neutral-300 bg-white text-neutral-950 focus:ring-neutral-950"
                     />
                     <span>Remember session on this device</span>
                   </label>
@@ -869,13 +862,13 @@ export function AuthExperience({
 
               {/* Terms and Privacy Notice (Sign Up only) */}
               {mode === 'signup' && (
-                <div className="text-[11px] text-zinc-400 leading-relaxed">
+                <div className="text-[11px] text-neutral-500 leading-relaxed">
                   By registering, you agree to BizChefs{' '}
                   <a
                     href="https://bizchefs.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#d39e36] hover:underline"
+                    className="text-[#b88022] hover:underline font-medium"
                   >
                     Enterprise Terms of Service
                   </a>{' '}
@@ -887,7 +880,7 @@ export function AuthExperience({
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 bg-[#d39e36] hover:bg-[#be8a29] text-black font-semibold rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
+                className="w-full py-2.5 bg-neutral-950 hover:bg-neutral-800 text-white font-semibold rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xs disabled:opacity-50"
               >
                 {loading ? (
                   <>
@@ -916,7 +909,7 @@ export function AuthExperience({
                       setMode('signin');
                       setMessage(null);
                     }}
-                    className="text-xs text-zinc-400 hover:text-zinc-200 cursor-pointer"
+                    className="text-xs text-neutral-600 hover:text-neutral-950 cursor-pointer"
                   >
                     Back to Sign In
                   </button>
@@ -928,13 +921,13 @@ export function AuthExperience({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-[#121316] border-t border-[#27272a] flex flex-col sm:flex-row items-center justify-between text-[11px] text-zinc-400 gap-2">
+        <div className="px-6 py-4 bg-neutral-50/80 border-t border-neutral-200 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-500 gap-2">
           <span>&copy; {new Date().getFullYear()} BizChefs. All rights reserved.</span>
           <div className="flex items-center gap-4">
-            <a href="https://bizchefs.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300">
+            <a href="https://bizchefs.com" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-900 transition-colors">
               Corporate Portal
             </a>
-            <a href="https://studio.bizchefs.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300">
+            <a href="https://studio.bizchefs.com" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-900 transition-colors">
               BizChefs Studio
             </a>
           </div>

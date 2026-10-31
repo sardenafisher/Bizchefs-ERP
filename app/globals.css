@@ -8,18 +8,12 @@
     --brand-gold-deep: #b88022;
     --brand-gold-subtle: #fcf8ee;
 
-    /* Light Theme Surfaces */
+    /* Light Theme Canonical Surfaces (Matching bizchefs.com) */
     --light-bg: #fafafa;
     --light-surface: #ffffff;
-    --light-text: #171717;
-    --light-border: #e4e4e7;
-
-    /* Dark Theme Surfaces */
-    --dark-bg: #0c0e12;
-    --dark-surface: #121316;
-    --dark-card: #13171f;
-    --dark-text: #f3f4f6;
-    --dark-border: #262626;
+    --light-text: #0a0a0a;
+    --light-text-secondary: #525252;
+    --light-border: #e5e5e5;
 
     /* Keyboard Focus Indicator */
     --focus-ring: #2563eb;

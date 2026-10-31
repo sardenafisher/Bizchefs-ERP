@@ -20,13 +20,13 @@ export function Badge({
   };
 
   const variantClasses = {
-    gold: 'bg-[#d39e36]/10 text-[#d39e36] border border-[#d39e36]/30',
-    default: 'bg-zinc-800 text-zinc-300 border border-zinc-700',
-    success: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30',
-    warning: 'bg-amber-500/10 text-amber-400 border border-amber-500/30',
-    danger: 'bg-red-500/10 text-red-400 border border-red-500/30',
-    info: 'bg-blue-500/10 text-blue-400 border border-blue-500/30',
-    outline: 'bg-transparent text-zinc-400 border border-zinc-700',
+    gold: 'bg-amber-50 text-amber-900 border border-amber-300',
+    default: 'bg-neutral-100 text-neutral-800 border border-neutral-200',
+    success: 'bg-emerald-50 text-emerald-800 border border-emerald-200',
+    warning: 'bg-amber-50 text-amber-800 border border-amber-200',
+    danger: 'bg-rose-50 text-rose-800 border border-rose-200',
+    info: 'bg-sky-50 text-sky-800 border border-sky-200',
+    outline: 'bg-transparent text-neutral-600 border border-neutral-300',
   };
 
   return (

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Building2, Check, Globe, DollarSign } from 'lucide-react';
+import { X, Building2, Check } from 'lucide-react';
 
 interface NewTenantModalProps {
   isOpen: boolean;
@@ -26,23 +26,23 @@ export function NewTenantModal({ isOpen, onClose, onCreateTenant }: NewTenantMod
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-      <div className="w-full max-w-lg bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl overflow-hidden text-zinc-100 animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+      <div className="w-full max-w-lg bg-white border border-neutral-200 rounded-xl shadow-2xl overflow-hidden text-neutral-900 animate-in fade-in">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/60">
+        <div className="px-6 py-4 border-b border-neutral-200 flex items-center justify-between bg-neutral-50/80">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-[#d39e36]/15 text-[#d39e36] rounded-lg border border-[#d39e36]/30">
+            <div className="p-2 bg-amber-50 text-[#d39e36] rounded-lg border border-amber-200">
               <Building2 className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-zinc-100">Register New Company / Branch</h2>
-              <p className="text-[11px] text-zinc-400">Creates an isolated multi-tenant ledger and database container</p>
+              <h2 className="text-sm font-semibold text-neutral-950">Register New Company / Branch</h2>
+              <p className="text-[11px] text-neutral-500">Creates an isolated multi-tenant ledger and database container</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-zinc-400 hover:text-zinc-200 rounded transition-colors cursor-pointer"
+            className="p-1.5 text-neutral-400 hover:text-neutral-900 rounded transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -51,24 +51,24 @@ export function NewTenantModal({ isOpen, onClose, onCreateTenant }: NewTenantMod
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
           <div>
-            <label className="block text-zinc-300 font-medium mb-1">Company / Organization Legal Name *</label>
+            <label className="block text-neutral-700 font-medium mb-1">Company / Organization Legal Name *</label>
             <input
               type="text"
               required
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g. Alexandria Bistro & Catering Ltd"
-              className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-[#d39e36]"
+              className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#d39e36] focus:ring-1 focus:ring-[#d39e36]"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">Base Currency *</label>
+              <label className="block text-neutral-700 font-medium mb-1">Base Currency *</label>
               <select
                 value={currency}
                 onChange={e => setCurrency(e.target.value)}
-                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 focus:outline-none focus:border-[#d39e36]"
+                className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 focus:outline-none focus:border-[#d39e36]"
               >
                 <option value="USD">USD — US Dollar ($)</option>
                 <option value="EGP">EGP — Egyptian Pound (E£)</option>
@@ -80,11 +80,11 @@ export function NewTenantModal({ isOpen, onClose, onCreateTenant }: NewTenantMod
             </div>
 
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">Industry Sector</label>
+              <label className="block text-neutral-700 font-medium mb-1">Industry Sector</label>
               <select
                 value={industry}
                 onChange={e => setIndustry(e.target.value)}
-                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 focus:outline-none focus:border-[#d39e36]"
+                className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 focus:outline-none focus:border-[#d39e36]"
               >
                 <option value="Technology & Software">Technology &amp; Software</option>
                 <option value="Food & Beverage / Restaurant">Food &amp; Beverage / Restaurant</option>
@@ -97,11 +97,11 @@ export function NewTenantModal({ isOpen, onClose, onCreateTenant }: NewTenantMod
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">Primary Timezone</label>
+              <label className="block text-neutral-700 font-medium mb-1">Primary Timezone</label>
               <select
                 value={timezone}
                 onChange={e => setTimezone(e.target.value)}
-                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 focus:outline-none focus:border-[#d39e36]"
+                className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 focus:outline-none focus:border-[#d39e36]"
               >
                 <option value="Africa/Cairo">Africa/Cairo (UTC+2 / UTC+3)</option>
                 <option value="UTC">UTC (Universal Time)</option>
@@ -113,20 +113,20 @@ export function NewTenantModal({ isOpen, onClose, onCreateTenant }: NewTenantMod
             </div>
 
             <div>
-              <label className="block text-zinc-300 font-medium mb-1">Tax / VAT ID (Optional)</label>
+              <label className="block text-neutral-700 font-medium mb-1">Tax / VAT ID (Optional)</label>
               <input
                 type="text"
                 value={taxNumber}
                 onChange={e => setTaxNumber(e.target.value)}
                 placeholder="e.g. EG-TR-889102"
-                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-[#d39e36]"
+                className="w-full px-3 py-2 bg-white border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-[#d39e36]"
               />
             </div>
           </div>
 
-          <div className="p-3 bg-zinc-800/60 rounded-lg border border-zinc-700/60 text-[11px] text-zinc-400 space-y-1">
-            <div className="font-semibold text-zinc-300">Automatic Tenant Provisioning Includes:</div>
-            <ul className="list-disc list-inside space-y-0.5 text-zinc-400">
+          <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-200 text-[11px] text-neutral-600 space-y-1">
+            <div className="font-semibold text-neutral-900">Automatic Tenant Provisioning Includes:</div>
+            <ul className="list-disc list-inside space-y-0.5 text-neutral-600">
               <li>Dedicated Standard Chart of Accounts (COA) with zero balance</li>
               <li>Autonomous document sequences (INV, QT, SO, PO, JV, RCT)</li>
               <li>Row-Level Security (RLS) isolation policy bound to your profile</li>
@@ -138,13 +138,13 @@ export function NewTenantModal({ isOpen, onClose, onCreateTenant }: NewTenantMod
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
+              className="px-4 py-2 text-neutral-600 hover:text-neutral-900 transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[#d39e36] hover:bg-[#be8a29] text-black font-semibold rounded-lg shadow-sm transition-colors cursor-pointer flex items-center gap-2"
+              className="px-4 py-2 bg-neutral-950 hover:bg-neutral-800 text-white font-semibold rounded-lg shadow-xs transition-colors cursor-pointer flex items-center gap-2"
             >
               <Check className="w-4 h-4" />
               <span>Create Tenant Company</span>

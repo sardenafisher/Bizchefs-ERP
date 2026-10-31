@@ -16,7 +16,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0e12] flex flex-col justify-center items-center p-4">
+    <div className="min-h-screen bg-[#fafafa] flex flex-col justify-center items-center p-4">
       <AuthExperience
         initialMode="forgot-password"
         onAuthSuccess={handleSuccess}

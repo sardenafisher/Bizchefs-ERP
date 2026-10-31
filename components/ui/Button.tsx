@@ -4,7 +4,7 @@ import React from 'react';
 import { Loader2 } from 'lucide-react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'gold-outline';
+  variant?: 'primary' | 'gold' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'gold-outline';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
@@ -32,15 +32,17 @@ export function Button({
 
   const variantClasses = {
     primary:
-      'bg-[#d39e36] hover:bg-[#e5a83b] active:bg-[#b88022] text-zinc-950 font-semibold shadow-xs border border-[#e5a83b]/40 transition-colors',
+      'bg-neutral-950 hover:bg-neutral-800 active:bg-black text-white font-medium shadow-xs transition-colors',
+    gold:
+      'bg-[#d39e36] hover:bg-[#e5a83b] active:bg-[#b88022] text-neutral-950 font-semibold shadow-xs border border-[#d39e36]/30 transition-colors',
     secondary:
-      'bg-[#13171f] hover:bg-[#1a202c] text-[#f3f4f6] border border-[#262626] hover:border-zinc-600 shadow-xs transition-colors',
+      'bg-white hover:bg-neutral-50 text-neutral-900 border border-neutral-300 shadow-xs hover:border-neutral-400 transition-colors',
     'gold-outline':
-      'bg-transparent hover:bg-[#d39e36]/10 text-[#d39e36] border border-[#d39e36]/60 hover:border-[#d39e36] transition-colors',
+      'bg-transparent hover:bg-[#d39e36]/10 text-[#b88022] border border-[#d39e36] transition-colors font-medium',
     outline:
-      'bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200 border border-zinc-300 dark:border-[#262626] transition-colors',
+      'bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-300 hover:border-neutral-400 transition-colors',
     ghost:
-      'bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors',
+      'bg-transparent hover:bg-neutral-100 text-neutral-700 hover:text-neutral-950 transition-colors',
     danger:
       'bg-red-600 hover:bg-red-700 text-white font-medium shadow-xs transition-colors',
   };

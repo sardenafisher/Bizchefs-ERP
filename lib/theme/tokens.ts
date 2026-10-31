@@ -31,7 +31,7 @@ export const BIZCHEFS_ECOSYSTEM = {
 } as const;
 
 export const THEME_COLORS = {
-  // Brand Gold
+  // Official BizChefs Brand Gold
   gold: {
     subtle: '#FCF8EE',
     light: '#F8E9C9',
@@ -40,25 +40,27 @@ export const THEME_COLORS = {
     deep: '#B88022',
     dark: '#8C5E13',
   },
-  // Dark theme surfaces
-  dark: {
-    bg: '#0C0E12',
-    surface: '#121316',
-    card: '#13171F',
-    border: '#262626',
-    textPrimary: '#F3F4F6',
-    textSecondary: '#9CA3AF',
-    textMuted: '#6B7280',
-  },
-  // Light theme surfaces
+  // Light theme surfaces (Official bizchefs.com standard)
   light: {
     bg: '#FAFAFA',
     surface: '#FFFFFF',
     card: '#FFFFFF',
-    border: '#E4E4E7',
-    textPrimary: '#171717',
-    textSecondary: '#4B5563',
-    textMuted: '#6B7280',
+    border: '#E5E5E5',
+    borderSubtle: '#F5F5F5',
+    borderStrong: '#171717',
+    textPrimary: '#0A0A0A',
+    textSecondary: '#525252',
+    textMuted: '#737373',
+  },
+  // Legacy fallback if referenced
+  dark: {
+    bg: '#FAFAFA',
+    surface: '#FFFFFF',
+    card: '#FFFFFF',
+    border: '#E5E5E5',
+    textPrimary: '#0A0A0A',
+    textSecondary: '#525252',
+    textMuted: '#737373',
   },
   focus: '#2563EB',
 } as const;

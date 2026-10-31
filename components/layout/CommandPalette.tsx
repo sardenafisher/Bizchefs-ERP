@@ -11,8 +11,7 @@ import {
   Users, 
   Briefcase, 
   Settings, 
-  FileText,
-  Building
+  FileText
 } from 'lucide-react';
 import { ERPDatabaseState } from '@/lib/db/database';
 
@@ -30,8 +29,7 @@ export function CommandPalette({ isOpen, onClose, onNavigate, state }: CommandPa
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        if (isOpen) onClose();
-        else onClose(); // parent handles toggle
+        onClose();
       }
       if (e.key === 'Escape' && isOpen) {
         onClose();
@@ -72,38 +70,38 @@ export function CommandPalette({ isOpen, onClose, onNavigate, state }: CommandPa
     .slice(0, 5);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
-      <div className="w-full max-w-xl bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl overflow-hidden flex flex-col text-zinc-100">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/50 backdrop-blur-xs animate-in fade-in">
+      <div className="w-full max-w-xl bg-white border border-neutral-200 rounded-xl shadow-2xl overflow-hidden flex flex-col text-neutral-900">
         {/* Search Input Bar */}
-        <div className="flex items-center px-4 border-b border-zinc-800">
-          <Search className="w-5 h-5 text-zinc-400 mr-3" />
+        <div className="flex items-center px-4 border-b border-neutral-200 bg-white">
+          <Search className="w-5 h-5 text-neutral-400 mr-3 shrink-0" />
           <input
             type="text"
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Type a module, invoice #, customer or SKU..."
-            className="w-full py-4 bg-transparent text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none"
+            className="w-full py-4 bg-transparent text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none"
             autoFocus
           />
           {query && (
             <button
               type="button"
               onClick={() => setQuery('')}
-              className="p-1 text-zinc-400 hover:text-zinc-200"
+              className="p-1 text-neutral-400 hover:text-neutral-900 cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
           )}
-          <kbd className="ml-2 px-1.5 py-0.5 text-[10px] bg-zinc-800 text-zinc-400 rounded border border-zinc-700 font-mono">
+          <kbd className="ml-2 px-1.5 py-0.5 text-[10px] bg-neutral-100 text-neutral-500 rounded border border-neutral-200 font-mono shadow-2xs">
             ESC
           </kbd>
         </div>
 
         {/* Results List */}
-        <div className="max-h-96 overflow-y-auto p-2 space-y-3">
+        <div className="max-h-96 overflow-y-auto p-2 space-y-3 bg-white">
           {matchedNav.length > 0 && (
             <div>
-              <div className="px-3 py-1 text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
+              <div className="px-3 py-1 text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">
                 Modules &amp; Views
               </div>
               <div className="space-y-0.5">
@@ -117,13 +115,13 @@ export function CommandPalette({ isOpen, onClose, onNavigate, state }: CommandPa
                         onNavigate(item.view);
                         onClose();
                       }}
-                      className="w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between hover:bg-[#d39e36]/15 hover:text-[#d39e36] transition-colors cursor-pointer"
+                      className="w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between hover:bg-neutral-100 text-neutral-800 hover:text-neutral-950 transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-2.5">
-                        <Icon className="w-4 h-4 text-zinc-400" />
+                        <Icon className="w-4 h-4 text-neutral-400" />
                         <span className="font-medium">{item.label}</span>
                       </div>
-                      <span className="text-[10px] text-zinc-400">Jump ↵</span>
+                      <span className="text-[10px] text-neutral-400">Jump ↵</span>
                     </button>
                   );
                 })}
@@ -133,7 +131,7 @@ export function CommandPalette({ isOpen, onClose, onNavigate, state }: CommandPa
 
           {matchedInvoices.length > 0 && (
             <div>
-              <div className="px-3 py-1 text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
+              <div className="px-3 py-1 text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">
                 Matching Sales Invoices
               </div>
               <div className="space-y-0.5">
@@ -145,13 +143,13 @@ export function CommandPalette({ isOpen, onClose, onNavigate, state }: CommandPa
                       onNavigate('sales');
                       onClose();
                     }}
-                    className="w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between hover:bg-zinc-800 transition-colors cursor-pointer"
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between hover:bg-neutral-100 text-neutral-800 transition-colors cursor-pointer"
                   >
                     <div>
-                      <span className="font-mono font-semibold text-[#d39e36] mr-2">{inv.invoiceNumber}</span>
-                      <span className="text-zinc-200">{inv.customerName}</span>
+                      <span className="font-mono font-semibold text-[#b88022] mr-2">{inv.invoiceNumber}</span>
+                      <span className="text-neutral-900 font-medium">{inv.customerName}</span>
                     </div>
-                    <span className="font-mono text-zinc-400">${inv.grandTotal.toLocaleString()}</span>
+                    <span className="font-mono text-neutral-600 font-semibold tabular-nums">${inv.grandTotal.toLocaleString()}</span>
                   </button>
                 ))}
               </div>
@@ -160,7 +158,7 @@ export function CommandPalette({ isOpen, onClose, onNavigate, state }: CommandPa
 
           {matchedCustomers.length > 0 && (
             <div>
-              <div className="px-3 py-1 text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
+              <div className="px-3 py-1 text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">
                 Matching Customers
               </div>
               <div className="space-y-0.5">
@@ -172,13 +170,13 @@ export function CommandPalette({ isOpen, onClose, onNavigate, state }: CommandPa
                       onNavigate('sales');
                       onClose();
                     }}
-                    className="w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between hover:bg-zinc-800 transition-colors cursor-pointer"
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between hover:bg-neutral-100 text-neutral-800 transition-colors cursor-pointer"
                   >
                     <div>
-                      <span className="font-mono text-xs text-zinc-400 mr-2">{cust.code}</span>
-                      <span className="font-medium text-zinc-200">{cust.name}</span>
+                      <span className="font-mono text-xs text-neutral-500 mr-2">{cust.code}</span>
+                      <span className="font-medium text-neutral-900">{cust.name}</span>
                     </div>
-                    <span className="text-[10px] text-zinc-400">{cust.email}</span>
+                    <span className="text-[10px] text-neutral-500">{cust.email}</span>
                   </button>
                 ))}
               </div>
@@ -187,7 +185,7 @@ export function CommandPalette({ isOpen, onClose, onNavigate, state }: CommandPa
 
           {matchedItems.length > 0 && (
             <div>
-              <div className="px-3 py-1 text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
+              <div className="px-3 py-1 text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">
                 Matching Inventory Items
               </div>
               <div className="space-y-0.5">
@@ -199,13 +197,13 @@ export function CommandPalette({ isOpen, onClose, onNavigate, state }: CommandPa
                       onNavigate('inventory');
                       onClose();
                     }}
-                    className="w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between hover:bg-zinc-800 transition-colors cursor-pointer"
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between hover:bg-neutral-100 text-neutral-800 transition-colors cursor-pointer"
                   >
                     <div>
-                      <span className="font-mono text-xs text-[#d39e36] mr-2">{item.sku}</span>
-                      <span className="text-zinc-200">{item.name}</span>
+                      <span className="font-mono text-xs text-[#b88022] mr-2">{item.sku}</span>
+                      <span className="text-neutral-900 font-medium">{item.name}</span>
                     </div>
-                    <span className="font-mono text-zinc-400">${item.unitPrice}</span>
+                    <span className="font-mono text-neutral-600 font-semibold tabular-nums">${item.unitPrice}</span>
                   </button>
                 ))}
               </div>
@@ -214,7 +212,7 @@ export function CommandPalette({ isOpen, onClose, onNavigate, state }: CommandPa
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-2 border-t border-zinc-800 bg-zinc-950/60 flex items-center justify-between text-[11px] text-zinc-400">
+        <div className="px-4 py-2 border-t border-neutral-200 bg-neutral-50/80 flex items-center justify-between text-[11px] text-neutral-500">
           <span>Navigation Quick Finder</span>
           <span>Press ESC to close</span>
         </div>
